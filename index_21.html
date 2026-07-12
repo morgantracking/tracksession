@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TrackSession</title>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCtE30QI82f_fBwpgRLQvSyUSE_Nz7L9o8",
+    authDomain: "tracksession-b3b50.firebaseapp.com",
+    projectId: "tracksession-b3b50",
+    storageBucket: "tracksession-b3b50.firebasestorage.app",
+    messagingSenderId: "857549820966",
+    appId: "1:857549820966:web:124c448c864074e2e782e7"
+  };
+  window.CLOUD_NAME   = "dgikoz7y4";
+  window.CLOUD_PRESET = "tackprepaphysique";
+  const app = initializeApp(firebaseConfig);
+  window.DB = getFirestore(app);
+  window.FS = { collection, addDoc, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, serverTimestamp };
+  window.dispatchEvent(new Event("fb-ready"));
+</script>
+
+<style>
+:root {
+  --red: #cc1a1a; --dark: #111; --white: #fff;
+  --chalk: #f7f4f4; --muted: #7a5a5a; --lime: #ff4d4d;
+  --r: 12px; --sh: 0 4px 20px rgba(0,0,0,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#111;color:#111;min-height:100vh}
+
+/* HEADER */
+header{background:#111;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid rgba(255,77,77,.2);display:none}
+.logo{color:#ff4d4d;font-size:1.2rem;font-weight:800}.logo span{color:#fff;font-weight:400}
+.tabs{display:flex;gap:6px}
+.tab{padding:7px 13px;border-radius:20px;border:1.5px solid rgba(255,77,77,.4);background:transparent;color:#eee;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.tab.on{background:#cc1a1a;color:#fff;border-color:#cc1a1a}
+.group-sel{background:#cc1a1a;color:#fff;border:none;padding:7px 12px;border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer}
+
+/* GATE */
+#gate{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.gate-btn{width:100%;max-width:320px;padding:18px;margin:8px 0;border-radius:12px;border:none;background:#fff;color:#111;font-size:1.05rem;font-weight:700;cursor:pointer;transition:transform .15s}
+.gate-btn:hover{transform:scale(1.02)}
+
+/* MAIN */
+main{max-width:860px;margin:0 auto;padding:20px 14px;display:none}
+.sec{display:none}.sec.on{display:block}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:16px}
+.card h2{font-size:1rem;font-weight:700;color:#111;margin-bottom:14px}
+
+/* FORM */
+label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 4px}
+input[type=text],input[type=date],input[type=number],textarea,select{width:100%;padding:10px 13px;border:1.5px solid #e0d0d0;border-radius:8px;font-size:.92rem;color:#111;background:var(--chalk);outline:none;font-family:inherit;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--red)}
+textarea{resize:vertical;min-height:65px}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-red{background:var(--red);color:#fff;width:100%;justify-content:center;margin-top:14px}
+.btn-red:disabled{opacity:.6;cursor:not-allowed}
+.btn-sm{padding:5px 11px;font-size:.76rem;border-radius:6px}
+.btn-lime{background:#ff4d4d;color:#fff}
+.btn-del{background:#fde8e8;color:#c0392b;border:none}
+
+/* EXERCISE BLOCK */
+.ex-block{border:1.5px solid #e8d0d0;border-radius:10px;padding:14px;background:var(--chalk);margin-bottom:10px}
+.ex-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ex-num{background:var(--red);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;flex-shrink:0}
+.ex-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.uz{border:2px dashed #e0c0c0;border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;margin-top:8px;font-size:.8rem;color:var(--muted)}
+.uz:hover{border-color:var(--red);background:#fff5f5}
+.uz .icon{font-size:1.5rem;display:block;margin-bottom:4px}
+
+/* SESSION LIST */
+.sess-item{background:var(--chalk);border-radius:10px;padding:14px;margin-bottom:10px;border-left:4px solid var(--red)}
+.prog-bar{height:8px;background:#ffd6d6;border-radius:99px;overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;background:var(--red);border-radius:99px}
+
+/* PLAYER GRID */
+.pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:10px}
+.pl-chip{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:10px;font-size:.76rem;font-weight:600;text-align:center;cursor:pointer;border:2px solid transparent}
+.pl-chip.done{background:#ffe5e5;color:var(--red);border-color:#ffb3b3}
+.pl-chip.wait{background:#fff8e1;color:#b8860b;border-color:#f0d070}
+.pl-chip .av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.pl-chip.done .av{background:#ffb3b3}.pl-chip.wait .av{background:#f0d070}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.overlay.center{align-items:center;padding:20px}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:up .3s ease}
+.overlay.center .modal{border-radius:20px}
+@keyframes up{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-title{font-size:1rem;font-weight:800;color:#111}
+.cls{background:var(--chalk);border:none;width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer}
+
+/* PIN */
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--red);background:transparent;transition:background .15s}
+.pin-dot.on{background:var(--red)}
+
+/* PLAYER SECTION */
+.hero{background:linear-gradient(135deg,#111 0%,#8b0000 100%);border-radius:var(--r);padding:22px;margin-bottom:16px;text-align:center}
+.hero-sel{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.3);font-weight:700;font-size:1rem;text-align:center;border-radius:10px;padding:12px 16px;width:100%}
+.sess-card{background:linear-gradient(135deg,#111 0%,#8b0000 100%);color:#fff;border-radius:var(--r);padding:20px;margin-bottom:14px}
+.tag-pill{display:inline-block;background:rgba(255,77,77,.25);color:#ff4d4d;border-radius:20px;padding:3px 11px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.ex-card{background:rgba(255,255,255,.08);border-radius:10px;padding:12px;margin-bottom:8px}
+.set-box{border-radius:8px;padding:10px;margin-top:6px;border:1px solid transparent}
+.set-done{background:rgba(255,77,77,.12);border-color:rgba(255,77,77,.3)}
+.set-next{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.set-lock{background:rgba(0,0,0,.2)}
+.feel-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.feel-btn{padding:7px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:.82rem;cursor:pointer}
+.feel-btn.on{background:#ff4d4d;color:#fff;border-color:#ff4d4d}
+
+/* RUN FORM */
+.run-form{background:linear-gradient(135deg,#1a0000 0%,#6b0000 100%);border-radius:var(--r);padding:20px;margin-top:10px}
+
+/* PERF LEADERBOARD */
+.lb-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lb-av{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--red);flex-shrink:0}
+.lb-av-init{width:34px;height:34px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem;flex-shrink:0}
+
+/* UPLOAD PROGRESS */
+.uprog{height:7px;background:#ffd6d6;border-radius:99px;overflow:hidden;display:none;margin-top:6px}
+.uprog-fill{height:100%;background:var(--red);border-radius:99px;width:0%;transition:width .2s}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;color:#fff;padding:11px 22px;border-radius:99px;font-size:.88rem;font-weight:600;z-index:999;transition:transform .3s;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+
+.empty{text-align:center;padding:32px 16px;color:var(--muted)}
+.empty .ic{font-size:2.5rem;margin-bottom:10px}
+input[type=file]{display:none}
+@media(max-width:480px){.ex-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="logo" style="font-size:1.6rem;margin-bottom:6px">⚽ Track<span>Session</span></div>
+  <p style="color:rgba(255,255,255,.5);font-size:.88rem;margin-bottom:28px">Choisis ton groupe</p>
+  <button class="gate-btn" onclick="enter('foot')">⚽ Football</button>
+  <button class="gate-btn" onclick="enter('hand')">🤾 Handball</button>
+  <button class="gate-btn" onclick="enter('individuel')">💪 Préparation individuelle</button>
+</div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="logo">⚽ Track<span>Session</span></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <select class="group-sel" id="grpSel" onchange="switchGroup(this.value)">
+      <option value="foot">⚽ Football</option>
+      <option value="hand">🤾 Handball</option>
+      <option value="individuel">💪 Individuel</option>
+    </select>
+    <div class="tabs">
+      <button class="tab" id="tab-coach" onclick="askPin()">🎯 Coach</button>
+      <button class="tab on" id="tab-player" onclick="goTab('player')">👤 Joueur</button>
+      <button class="tab" id="tab-perf" onclick="goTab('perf')">📈 Perfs</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===== COACH ===== -->
+  <div id="sec-coach" class="sec">
+
+    <div class="card">
+      <h2>📋 Nouvelle séance</h2>
+      <label>Titre</label>
+      <input type="text" id="sTitle" placeholder="ex: Endurance + technique"/>
+      <label>Date</label>
+      <input type="date" id="sDate"/>
+      <label>Consignes générales (optionnel)</label>
+      <textarea id="sDesc" placeholder="Message pour les joueurs..."></textarea>
+      <label style="margin-top:16px">Exercices</label>
+      <div id="exBuilder"></div>
+      <button class="btn btn-lime btn-sm" onclick="addEx()" style="margin-top:8px;width:100%;justify-content:center">+ Ajouter un exercice</button>
+      <label style="margin-top:16px">Joueurs convoqués</label>
+      <div id="plSelGrid"></div>
+      <button class="btn btn-red" onclick="createSession()">✅ Envoyer la séance</button>
+    </div>
+
+    <div class="card">
+      <h2>📊 Suivi des séances</h2>
+      <div id="sessList"><div class="empty"><div class="ic">🗂️</div>Aucune séance</div></div>
+    </div>
+
+    <div class="card">
+      <h2>👥 Joueurs</h2>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="newPl" placeholder="Prénom Nom" style="flex:1"/>
+        <button class="btn btn-lime btn-sm" onclick="addPlayer()" style="margin-top:0">+ Ajouter</button>
+      </div>
+      <div id="plList" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- ===== JOUEUR ===== -->
+  <div id="sec-player" class="sec on">
+    <div class="hero">
+      <div style="color:#ff4d4d;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">👤 Qui es-tu ?</div>
+      <select id="plPick" class="hero-sel" onchange="onPlayerSelect()">
+        <option value="">— Sélectionne ton nom —</option>
+      </select>
+    </div>
+    <div id="plView"><div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">👆</div>Sélectionne ton nom</div></div>
+
+    <!-- FORMULAIRE COURSE — statique, jamais reconstruit -->
+    <div id="runWrap" style="display:none">
+      <div class="run-form">
+        <div style="color:#ffd700;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">🏃 Enregistrer une course</div>
+        <label style="color:rgba(255,255,255,.65)">Distance (mètres)</label>
+        <input type="text" id="rDist" placeholder="ex: 2800" inputmode="numeric" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:4px"/>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <div style="flex:1">
+            <label style="color:rgba(255,255,255,.65)">Minutes</label>
+            <input type="text" id="rMin" placeholder="min" inputmode="numeric" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:4px"/>
+          </div>
+          <div style="flex:1">
+            <label style="color:rgba(255,255,255,.65)">Secondes</label>
+            <input type="text" id="rSec" placeholder="sec" inputmode="numeric" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:4px"/>
+          </div>
+        </div>
+        <label style="color:rgba(255,255,255,.65);margin-top:10px">Nom du test (optionnel)</label>
+        <input type="text" id="rTest" placeholder="Cooper 12 min, Test 3000m..." style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:4px"/>
+        <label style="color:rgba(255,255,255,.65);margin-top:10px">📸 Screenshot Strava/Garmin <span style="color:#ffd700">*obligatoire*</span></label>
+        <div class="uz" id="rPhotoZone" onclick="document.getElementById('rPhotoIn').click()" style="border-color:rgba(255,255,255,.25)">
+          <span class="icon">📱</span>Importe ton screen Strava ou Garmin
+        </div>
+        <input type="file" id="rPhotoIn" accept="image/*" onchange="onRunPhoto(this)"/>
+        <div id="rPhotoPreview"></div>
+        <button class="btn btn-red" id="rBtn" onclick="submitRun()" style="margin-top:14px">📊 Calculer et enregistrer ma VMA</button>
+        <div id="rResult" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PERFS ===== -->
+  <div id="sec-perf" class="sec">
+    <div class="card">
+      <h2>🏆 Classement VMA — <span id="perfGrpLbl"></span></h2>
+      <div id="lboard"><div class="empty"><div class="ic">🏃</div>Aucune performance</div></div>
+    </div>
+    <div class="card" id="perfCoach" style="display:none">
+      <h2>📋 Historique (Coach)</h2>
+      <div id="perfHist"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL COACH (séances - détail joueur) -->
+<div class="overlay" id="plModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="plModalName"></div>
+      <button class="cls" onclick="closeModal('plModal')">✕</button>
+    </div>
+    <div id="plModalBody"></div>
+  </div>
+</div>
+
+<!-- MODAL PIN -->
+<div class="overlay center" id="pinModal">
+  <div class="modal" style="max-width:320px">
+    <div class="modal-head">
+      <div class="modal-title">🔐 Accès Coach</div>
+      <button class="cls" onclick="closeModal('pinModal')">✕</button>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Code PIN à 4 chiffres</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:18px" id="pinDots">
+      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <button class="btn" onclick="pk('1')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">1</button>
+      <button class="btn" onclick="pk('2')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">2</button>
+      <button class="btn" onclick="pk('3')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">3</button>
+      <button class="btn" onclick="pk('4')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">4</button>
+      <button class="btn" onclick="pk('5')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">5</button>
+      <button class="btn" onclick="pk('6')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">6</button>
+      <button class="btn" onclick="pk('7')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">7</button>
+      <button class="btn" onclick="pk('8')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">8</button>
+      <button class="btn" onclick="pk('9')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">9</button>
+      <div></div>
+      <button class="btn" onclick="pk('0')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">0</button>
+      <button class="btn" onclick="pk('⌫')" style="justify-content:center;padding:14px;font-size:1.1rem;font-weight:700;background:var(--chalk)">⌫</button>
+    </div>
+    <div id="pinErr" style="color:#c0392b;font-size:.8rem;text-align:center;margin-top:10px;display:none">Code incorrect !</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── ÉTAT GLOBAL ──────────────────────────────────────
+let DB, FS;
+let group    = null;
+let isCoach  = false;
+let players  = [];
+let sessions = [];
+let perfs    = [];
+let profiles = {};
+let selectedPl = new Set();
+let exList   = [];
+let exCount  = 0;
+let feelings = {};
+let runPhoto = null;
+let unsubSess = null, unsubPerfs = null, unsubPl = null, unsubProf = null;
+
+const PIN = '2311';
+let pinEntry = '';
+
+// ── CLOUDINARY UPLOAD ────────────────────────────────
+async function cloudUpload(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', window.CLOUD_PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${window.CLOUD_NAME}/auto/upload`, {
+    method: 'POST', body: fd
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  if (!data.secure_url) throw new Error('Pas de URL retournée');
+  return data.secure_url;
+}
+
+// ── INIT FIREBASE ────────────────────────────────────
+window.addEventListener('fb-ready', () => {
+  DB = window.DB;
+  FS = window.FS;
+  document.getElementById('sDate').value = new Date().toISOString().split('T')[0];
+  addEx();
+});
+
+// ── GATE ─────────────────────────────────────────────
+function enter(g) {
+  group = g;
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('hdr').style.display  = 'flex';
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('grpSel').value = g;
+  loadGroup();
+}
+
+function switchGroup(g) {
+  group = g;
+  isCoach = false;
+  document.getElementById('plPick').value = '';
+  document.getElementById('plView').innerHTML = '<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">👆</div>Sélectionne ton nom</div>';
+  document.getElementById('runWrap').style.display = 'none';
+  loadGroup();
+  toast('Groupe : ' + grpLabel(g));
+}
+
+function grpLabel(g) {
+  return g==='foot'?'⚽ Football':g==='hand'?'🤾 Handball':'💪 Individuel';
+}
+
+// ── CHARGER GROUPE ───────────────────────────────────
+function loadGroup() {
+  if (unsubSess)  { unsubSess();  unsubSess  = null; }
+  if (unsubPerfs) { unsubPerfs(); unsubPerfs = null; }
+  if (unsubPl)    { unsubPl();    unsubPl    = null; }
+  if (unsubProf)  { unsubProf();  unsubProf  = null; }
+  players = []; sessions = []; perfs = []; profiles = {};
+  listenPlayers();
+  listenSessions();
+  listenPerfs();
+  listenProfiles();
+}
+
+// ── LISTENERS FIRESTORE ──────────────────────────────
+function listenPlayers() {
+  const ref = FS.doc(DB, 'groups', group);
+  unsubPl = FS.onSnapshot(ref, snap => {
+    players = snap.exists() ? (snap.data().players || []) : [];
+    renderPlList(); renderPlSelGrid(); fillPickers();
+  });
+}
+
+function listenSessions() {
+  const q = FS.query(FS.collection(DB, 'sessions'), FS.where('group','==',group));
+  unsubSess = FS.onSnapshot(q, snap => {
+    sessions = snap.docs.map(d => ({id:d.id,...d.data()}));
+    sessions.sort((a,b)=>{
+      const ta = a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0;
+      const tb = b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0;
+      return tb-ta;
+    });
+    renderSessList();
+    const pp = document.getElementById('plPick');
+    if (pp && pp.value) renderPlayerView(pp.value);
+  });
+}
+
+function listenPerfs() {
+  const q = FS.query(FS.collection(DB, 'perfs'), FS.where('group','==',group));
+  unsubPerfs = FS.onSnapshot(q, snap => {
+    perfs = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderLeaderboard();
+    if (isCoach) renderPerfHist();
+  });
+}
+
+function listenProfiles() {
+  const ref = FS.doc(DB, 'profiles', group);
+  unsubProf = FS.onSnapshot(ref, snap => {
+    profiles = snap.exists() ? (snap.data()||{}) : {};
+    renderLeaderboard();
+    const pp = document.getElementById('plPick');
+    if (pp && pp.value) renderPlayerView(pp.value);
+  });
+}
+
+// ── PIN ───────────────────────────────────────────────
+function askPin() {
+  if (isCoach) { goTab('coach'); return; }
+  pinEntry = '';
+  updPinDots();
+  document.getElementById('pinErr').style.display = 'none';
+  document.getElementById('pinModal').classList.add('on');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('on');
+}
+function pk(k) {
+  if (k === '⌫') { pinEntry = pinEntry.slice(0,-1); updPinDots(); return; }
+  if (pinEntry.length >= 4) return;
+  pinEntry += k;
+  updPinDots();
+  if (pinEntry.length === 4) {
+    if (pinEntry === PIN) {
+      isCoach = true;
+      closeModal('pinModal');
+      goTab('coach');
+      toast('✅ Accès coach !');
+    } else {
+      document.getElementById('pinErr').style.display = 'block';
+      setTimeout(()=>{ pinEntry=''; updPinDots(); document.getElementById('pinErr').style.display='none'; }, 900);
+    }
+  }
+}
+function updPinDots() {
+  document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('on', i<pinEntry.length));
+}
+
+// ── TABS ─────────────────────────────────────────────
+function goTab(t) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+t).classList.add('on');
+  document.getElementById('tab-'+t).classList.add('on');
+  if (t==='perf') {
+    document.getElementById('perfGrpLbl').textContent = grpLabel(group);
+    renderLeaderboard();
+    document.getElementById('perfCoach').style.display = isCoach?'block':'none';
+    if (isCoach) renderPerfHist();
+  }
+}
+
+// ── PLAYERS ──────────────────────────────────────────
+function fillPickers() {
+  const pp = document.getElementById('plPick');
+  const cur = pp ? pp.value : '';
+  const opts = '<option value="">— Sélectionne ton nom —</option>' +
+    players.map(p=>`<option value="${p}"${p===cur?' selected':''}>${p}</option>`).join('');
+  if (pp) pp.innerHTML = opts;
+}
+
+function renderPlSelGrid() {
+  const g = document.getElementById('plSelGrid');
+  if (!g) return;
+  if (!players.length) { g.innerHTML='<p style="color:var(--muted);font-size:.8rem">Ajoute des joueurs en bas</p>'; return; }
+  g.innerHTML = players.map(p=>`
+    <div onclick="togglePl('${p}')" style="padding:7px;border-radius:8px;border:1.5px solid ${selectedPl.has(p)?'var(--red)':'#e0d0d0'};background:${selectedPl.has(p)?'var(--red)':'var(--chalk)'};cursor:pointer;text-align:center;font-size:.78rem;font-weight:600;color:${selectedPl.has(p)?'#fff':'#111'};transition:all .15s">
+      ${p}
+    </div>`).join('');
+}
+
+function togglePl(n) { if (selectedPl.has(n)) selectedPl.delete(n); else selectedPl.add(n); renderPlSelGrid(); }
+
+function renderPlList() {
+  const el = document.getElementById('plList');
+  if (!el) return;
+  el.innerHTML = players.map(p=>`
+    <span style="display:inline-flex;align-items:center;gap:5px;background:#ffe5e5;border-radius:20px;padding:5px 11px;font-size:.8rem;font-weight:600">
+      ⚽ ${p} <span onclick="removePl('${p}')" style="cursor:pointer;color:#c0392b">✕</span>
+    </span>`).join('') || '<span style="color:var(--muted);font-size:.8rem">Aucun joueur</span>';
+}
+
+async function addPlayer() {
+  const n = document.getElementById('newPl').value.trim();
+  if (!n) return toast('Entre un nom !');
+  if (players.length >= 36) return toast('Maximum 36 joueurs');
+  if (players.includes(n)) return toast('Joueur déjà dans la liste');
+  players.push(n);
+  await FS.setDoc(FS.doc(DB,'groups',group), {players}, {merge:true});
+  document.getElementById('newPl').value = '';
+  toast('✅ ' + n + ' ajouté !');
+}
+
+async function removePl(n) {
+  if (!confirm('Supprimer '+n+' ?')) return;
+  players = players.filter(p=>p!==n);
+  await FS.setDoc(FS.doc(DB,'groups',group), {players}, {merge:true});
+}
+
+// ── EXERCISES ────────────────────────────────────────
+function addEx() {
+  exCount++;
+  const id = 'e'+exCount;
+  exList.push({id, name:'', desc:'', sets:3, reps:10, rest:60, file:null, url:null});
+  const div = document.createElement('div');
+  div.className = 'ex-block'; div.id = 'blk_'+id;
+  div.innerHTML = `
+    <div class="ex-head">
+      <div class="ex-num">${exList.length}</div>
+      <input type="text" placeholder="Nom de l'exercice" oninput="upEx('${id}','name',this.value)" style="flex:1;margin:0 8px"/>
+      <button class="btn btn-del btn-sm" onclick="delEx('${id}')">✕</button>
+    </div>
+    <div class="ex-grid">
+      <div>
+        <label style="margin-top:0">Séries</label>
+        <select onchange="upEx('${id}','sets',parseInt(this.value))">
+          ${[1,2,3,4,5,6].map(n=>`<option${n===3?' selected':''}>${n}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label style="margin-top:0">Rép.</label>
+        <input type="number" value="10" min="1" max="99" oninput="upEx('${id}','reps',parseInt(this.value))"/>
+      </div>
+      <div>
+        <label style="margin-top:0">Récup (s)</label>
+        <input type="number" value="60" min="0" max="300" oninput="upEx('${id}','rest',parseInt(this.value))"/>
+      </div>
+    </div>
+    <textarea placeholder="Consignes... (optionnel)" oninput="upEx('${id}','desc',this.value)" style="min-height:50px;font-size:.85rem;margin-top:8px"></textarea>
+    <div class="uz" onclick="document.getElementById('vf_${id}').click()"><span class="icon">🎬</span>Vidéo démo (optionnel)</div>
+    <input type="file" id="vf_${id}" accept="video/*" onchange="prevExVid('${id}',this)"/>
+    <div id="ev_${id}"></div>`;
+  document.getElementById('exBuilder').appendChild(div);
+  reNumEx();
+}
+
+function upEx(id,k,v){const e=exList.find(x=>x.id===id);if(e)e[k]=v;}
+function delEx(id){exList=exList.filter(x=>x.id!==id);document.getElementById('blk_'+id)?.remove();reNumEx();}
+function reNumEx(){document.querySelectorAll('.ex-num').forEach((el,i)=>el.textContent=i+1);}
+function prevExVid(id,inp){
+  const f=inp.files[0];if(!f)return;
+  const e=exList.find(x=>x.id===id);if(e)e.file=f;
+  document.getElementById('ev_'+id).innerHTML=`<video src="${URL.createObjectURL(f)}" controls style="width:100%;border-radius:6px;margin-top:6px;max-height:140px;object-fit:cover"></video><div style="font-size:.72rem;color:var(--red);font-weight:600;margin-top:3px">✅ Vidéo prête</div>`;
+}
+
+// ── CREATE SESSION ────────────────────────────────────
+async function createSession() {
+  const title = document.getElementById('sTitle').value.trim();
+  const date  = document.getElementById('sDate').value;
+  const desc  = document.getElementById('sDesc').value.trim();
+  if (!title) return toast('Titre obligatoire !');
+  if (!date)  return toast('Date obligatoire !');
+  if (!selectedPl.size) return toast('Sélectionne au moins un joueur !');
+  toast('⏳ Envoi en cours...');
+  const exData = [];
+  for (const ex of exList) {
+    let url = null;
+    if (ex.file) {
+      try { url = await cloudUpload(ex.file); } catch(e) { toast('Erreur vidéo : '+e.message); return; }
+    }
+    exData.push({name:ex.name||'Exercice',desc:ex.desc,sets:ex.sets||3,reps:ex.reps||10,rest:ex.rest||60,url});
+  }
+  const convoqued = [...selectedPl];
+  const responses = {};
+  convoqued.forEach(p=>responses[p]=null);
+  await FS.addDoc(FS.collection(DB,'sessions'),{title,date,desc,group,exercises:exData,convoqued,responses,createdAt:FS.serverTimestamp()});
+  document.getElementById('sTitle').value='';
+  document.getElementById('sDesc').value='';
+  exList=[]; exCount=0;
+  document.getElementById('exBuilder').innerHTML='';
+  selectedPl.clear();
+  renderPlSelGrid();
+  addEx();
+  toast('✅ Séance envoyée !');
+}
+
+// ── RENDER SESSIONS LIST (coach) ─────────────────────
+function renderSessList() {
+  const el = document.getElementById('sessList');
+  if (!sessions.length) { el.innerHTML='<div class="empty"><div class="ic">🗂️</div>Aucune séance</div>'; return; }
+  el.innerHTML = sessions.map(s=>{
+    const tot = s.convoqued?.length||0;
+    const don = s.convoqued?.filter(p=>s.responses?.[p]?.done).length||0;
+    const pct = tot?Math.round(don/tot*100):0;
+    const exSum = (s.exercises||[]).map((e,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;background:#fff0f0;border-radius:6px;padding:3px 8px;font-size:.75rem;margin:2px"><b style="color:var(--red)">Ex${i+1}</b>${e.name||'Exercice'}${e.url?'🎬':''}</span>`).join('');
+    const chips = (s.convoqued||[]).map(p=>{
+      const done = s.responses?.[p]?.done;
+      return `<div class="pl-chip ${done?'done':'wait'}" onclick="openPlModal('${s.id}','${p}')">
+        <div class="av">${done?'✅':'⏳'}</div>
+        <span>${p}</span>
+        <span style="font-size:.65rem;opacity:.8">${done?'Validé':'En attente'}</span>
+      </div>`;
+    }).join('');
+    return `<div class="sess-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div>
+          <div style="font-weight:700;font-size:.95rem">📋 ${s.title}</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px">📅 ${fmtDate(s.date)} · ${s.exercises?.length||0} exercice(s)</div>
+        </div>
+        <button class="btn btn-del btn-sm" onclick="delSession('${s.id}','${s.title}')">🗑️</button>
+      </div>
+      <div style="margin:8px 0;display:flex;flex-wrap:wrap;gap:4px">${exSum}</div>
+      <div style="font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:3px"><span>Validations</span><span>${don}/${tot}</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <div class="pl-grid">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+async function delSession(id,title) {
+  if (!confirm('Supprimer "'+title+'" ?')) return;
+  await FS.deleteDoc(FS.doc(DB,'sessions',id));
+  toast('🗑️ Séance supprimée');
+}
+
+// ── MODAL JOUEUR (coach) ─────────────────────────────
+function openPlModal(sid,player) {
+  const s = sessions.find(x=>x.id===sid); if (!s) return;
+  const resp = s.responses?.[player];
+  document.getElementById('plModalName').textContent = '⚽ '+player;
+  let html = '';
+  if (!resp?.exercises && !resp?.done) {
+    html = '<div class="empty"><div class="ic">⏳</div>Pas encore commencé</div>';
+  } else {
+    if (resp.done) html += `<div style="background:#fff0f0;border-radius:8px;padding:10px;margin-bottom:12px"><b style="color:var(--red)">✅ Séance terminée</b>${resp.feeling?`<div style="font-size:.8rem;color:var(--muted);margin-top:3px">Ressenti : ${resp.feeling}</div>`:''}</div>`;
+    (s.exercises||[]).forEach((e,ei)=>{
+      const exR = resp?.exercises?.['ex'+ei];
+      html += `<div style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:var(--red);color:#fff;border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:800">Ex${ei+1}</span><b>${e.name||'Exercice'}</b><span style="margin-left:auto;font-size:.75rem;color:var(--muted)">${exR?Object.keys(exR).length:0}/${e.sets||3} séries</span></div>`;
+      for (let si=1;si<=(e.sets||3);si++) {
+        const sd = exR?.['set'+si];
+        html += sd?.url
+          ? `<div style="margin-bottom:6px"><div style="font-size:.72rem;color:var(--red);font-weight:700;margin-bottom:3px">✅ Série ${si}</div><video src="${sd.url}" controls playsinline style="width:100%;border-radius:8px;max-height:180px;object-fit:cover"></video></div>`
+          : `<div style="padding:7px 10px;background:#fafafa;border-radius:6px;margin-bottom:4px;font-size:.78rem;color:var(--muted)">⏳ Série ${si} — pas encore faite</div>`;
+      }
+      html += '</div>';
+    });
+  }
+  document.getElementById('plModalBody').innerHTML = html;
+  document.getElementById('plModal').classList.add('on');
+}
+
+// ── VUE JOUEUR ───────────────────────────────────────
+function onPlayerSelect() {
+  const p = document.getElementById('plPick').value;
+  document.getElementById('runWrap').style.display = p ? 'block' : 'none';
+  if (p) renderPlayerView(p); else document.getElementById('plView').innerHTML='<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">👆</div>Sélectionne ton nom</div>';
+}
+
+function renderPlayerView(player) {
+  const el = document.getElementById('plView');
+  const prof = profiles[player];
+  const avHTML = prof
+    ? `<img src="${prof}" style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:3px solid #ff4d4d">`
+    : `<div style="width:54px;height:54px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;border:3px solid rgba(255,255,255,.3)">${player.charAt(0).toUpperCase()}</div>`;
+
+  let html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+    ${avHTML}
+    <div>
+      <div style="color:#fff;font-weight:800;font-size:1rem">${player}</div>
+      <label for="profIn" style="color:#ff4d4d;font-size:.74rem;cursor:pointer;font-weight:600">📸 ${prof?'Changer ma photo':'Ajouter une photo'}</label>
+      <input type="file" id="profIn" accept="image/*" onchange="uploadProfile('${player}',this)"/>
+    </div>
+  </div>`;
+
+  const mySess = sessions.filter(s=>s.convoqued?.includes(player));
+  if (!mySess.length) { el.innerHTML = html + '<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">📭</div>Aucune séance pour toi</div>'; return; }
+
+  mySess.forEach(s => {
+    const resp = s.responses?.[player];
+    const isDone = resp?.done === true;
+    let exHTML = '';
+    (s.exercises||[]).forEach((e,ei) => {
+      const exR = resp?.exercises?.['ex'+ei];
+      const setsDone = exR ? Object.keys(exR).length : 0;
+      const totalSets = e.sets||3;
+      let setsHTML = '';
+      for (let si=1;si<=totalSets;si++) {
+        const sd = exR?.['set'+si];
+        const isNext = !sd && setsDone===si-1;
+        if (sd) {
+          setsHTML += `<div class="set-box set-done"><div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#ff4d4d;font-size:.85rem;font-weight:700">✅ Série ${si}/${totalSets} — ${e.reps||10} rép.</span></div>${sd.url?`<video src="${sd.url}" controls playsinline style="width:100%;border-radius:6px;margin-top:6px;max-height:130px;object-fit:cover"></video>`:''}</div>`;
+        } else if (isNext && !isDone) {
+          setsHTML += `<div class="set-box set-next">
+            <div style="color:rgba(255,255,255,.9);font-size:.85rem;font-weight:700;margin-bottom:6px">🎯 Série ${si}/${totalSets} — ${e.reps||10} rép.</div>
+            <div class="uz" onclick="document.getElementById('sv_${s.id}_${ei}_${si}').click()" style="border-color:rgba(255,255,255,.3)"><span class="icon" style="font-size:1.3rem">🎥</span>Filme ta série ${si}</div>
+            <input type="file" id="sv_${s.id}_${ei}_${si}" accept="video/*" capture="environment" onchange="uploadSerie('${s.id}','${player}',${ei},${si},this)"/>
+            <div class="uprog" id="prog_${s.id}_${ei}_${si}"><div class="uprog-fill" id="progf_${s.id}_${ei}_${si}"></div></div>
+          </div>`;
+        } else if (!isDone) {
+          setsHTML += `<div class="set-box set-lock"><span style="color:rgba(255,255,255,.35);font-size:.78rem">🔒 Série ${si} — valide d'abord la précédente</span></div>`;
+        }
+      }
+      exHTML += `<div class="ex-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="background:#ff4d4d;color:#fff;border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:800">Ex${ei+1}</span>
+          <span style="font-weight:700;color:#fff;font-size:.9rem">${e.name||'Exercice'}</span>
+          <span style="margin-left:auto;font-size:.72rem;color:#ff4d4d;font-weight:700">${setsDone}/${totalSets}</span>
+        </div>
+        ${e.desc?`<p style="font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:6px">${e.desc}</p>`:''}
+        <div style="font-size:.75rem;color:rgba(255,255,255,.55)">📊 ${totalSets} séries × ${e.reps||10} rép.${e.rest?` · ⏱ ${e.rest}s récup`:''}</div>
+        ${e.url?`<video src="${e.url}" controls playsinline style="width:100%;border-radius:6px;margin-top:8px;max-height:160px;object-fit:cover"></video>`:''}
+        ${setsHTML}
+      </div>`;
+    });
+
+    const allDone = (s.exercises||[]).every((e,ei)=>{
+      const exR = resp?.exercises?.['ex'+ei];
+      return exR && Object.keys(exR).length>=(e.sets||3);
+    }) && (s.exercises||[]).length > 0;
+
+    html += `<div class="sess-card">
+      <span class="tag-pill">⚽ Séance</span>
+      <h2 style="color:#fff;font-size:1.2rem;margin-bottom:6px">${s.title}</h2>
+      <div style="color:rgba(255,255,255,.6);font-size:.78rem;margin-bottom:10px">📅 ${fmtDate(s.date)}</div>
+      ${s.desc?`<p style="color:rgba(255,255,255,.75);font-size:.85rem;margin-bottom:12px">${s.desc}</p>`:''}
+      ${exHTML}
+      ${isDone?`<div style="background:rgba(255,77,77,.15);border-radius:10px;padding:12px;margin-top:8px"><b style="color:#ff4d4d">✅ Séance validée !</b>${resp.feeling?`<div style="color:rgba(255,255,255,.7);font-size:.8rem;margin-top:3px">Ressenti : ${resp.feeling}</div>`:''}</div>`:''}
+      ${allDone&&!isDone?`<div style="border-top:1px solid rgba(255,255,255,.15);padding-top:14px;margin-top:10px">
+        <div style="color:#ff4d4d;font-weight:700;margin-bottom:8px">🏁 Toutes les séries validées !</div>
+        <div class="feel-row" id="feel_${s.id}">
+          ${['🔥 Excellent','💪 Bien','😐 Moyen','😓 Difficile'].map(f=>`<span class="feel-btn" onclick="selFeel('${s.id}','${f}',this)">${f}</span>`).join('')}
+        </div>
+        <input type="text" id="com_${s.id}" placeholder="Commentaire (optionnel)" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:8px"/>
+        <button class="btn btn-red" onclick="finalize('${s.id}','${player}')" style="margin-top:10px">✅ Valider ma séance</button>
+      </div>`:''}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function selFeel(sid,f,el) {
+  feelings[sid]=f;
+  el.closest('.feel-row').querySelectorAll('.feel-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── UPLOAD SÉRIE ─────────────────────────────────────
+async function uploadSerie(sid,player,ei,si,inp) {
+  const file = inp.files[0]; if (!file) return;
+  const prog  = document.getElementById('prog_'+sid+'_'+ei+'_'+si);
+  const progf = document.getElementById('progf_'+sid+'_'+ei+'_'+si);
+  if (prog) prog.style.display = 'block';
+  if (progf) progf.style.width = '40%';
+  toast('⏳ Upload série '+si+'...');
+  let url;
+  try { url = await cloudUpload(file); } catch(e) { toast('❌ '+e.message); if(prog)prog.style.display='none'; return; }
+  if (progf) progf.style.width = '100%';
+  const sess = sessions.find(s=>s.id===sid);
+  if (!sess.responses) sess.responses={};
+  if (!sess.responses[player]) sess.responses[player]={};
+  if (!sess.responses[player].exercises) sess.responses[player].exercises={};
+  if (!sess.responses[player].exercises['ex'+ei]) sess.responses[player].exercises['ex'+ei]={};
+  sess.responses[player].exercises['ex'+ei]['set'+si] = {url, at: new Date().toISOString()};
+  await FS.updateDoc(FS.doc(DB,'sessions',sid),{['responses.'+player]:sess.responses[player]});
+  toast('✅ Série '+si+' validée !');
+  setTimeout(()=>{ if(prog)prog.style.display='none'; renderPlayerView(player); }, 400);
+}
+
+// ── FINALISER SÉANCE ─────────────────────────────────
+async function finalize(sid,player) {
+  const f = feelings[sid];
+  if (!f) return toast('Choisis ton ressenti !');
+  const c = document.getElementById('com_'+sid)?.value.trim()||'';
+  const sess = sessions.find(s=>s.id===sid);
+  if (!sess.responses[player]) sess.responses[player]={};
+  sess.responses[player].feeling = f;
+  sess.responses[player].comment = c;
+  sess.responses[player].done    = true;
+  sess.responses[player].at      = new Date().toISOString();
+  await FS.updateDoc(FS.doc(DB,'sessions',sid),{['responses.'+player]:sess.responses[player]});
+  toast('🎉 Séance validée !');
+  setTimeout(()=>renderPlayerView(player), 300);
+}
+
+// ── PHOTO PROFIL ─────────────────────────────────────
+async function uploadProfile(player,inp) {
+  const f=inp.files[0]; if(!f) return;
+  toast('⏳ Upload photo...');
+  let url; try { url=await cloudUpload(f); } catch(e){return toast('Erreur : '+e.message);}
+  await FS.setDoc(FS.doc(DB,'profiles',group),{[player]:url},{merge:true});
+  toast('✅ Photo mise à jour !');
+}
+
+// ── RUN FORM ─────────────────────────────────────────
+function onRunPhoto(inp) {
+  const f=inp.files[0]; if(!f) return;
+  runPhoto=f;
+  const url=URL.createObjectURL(f);
+  document.getElementById('rPhotoPreview').innerHTML=`<img src="${url}" style="width:100%;border-radius:8px;margin-top:6px;max-height:170px;object-fit:cover"/><div style="font-size:.72rem;color:#ffd700;font-weight:600;margin-top:3px">✅ Photo prête</div>`;
+  document.getElementById('rPhotoZone').style.borderColor='#ffd700';
+}
+
+async function submitRun() {
+  const player = document.getElementById('plPick').value;
+  if (!player) return toast('Sélectionne ton nom !');
+  const dist = parseFloat((document.getElementById('rDist').value||'').replace(',','.'));
+  const min  = parseInt(document.getElementById('rMin').value||'0')||0;
+  const sec  = parseInt(document.getElementById('rSec').value||'0')||0;
+  const test = document.getElementById('rTest').value.trim()||'Course libre';
+  if (!dist||dist<=0) return toast('Distance invalide !');
+  const total = min*60+sec;
+  if (total<=0) return toast('Temps invalide !');
+  if (!runPhoto) return toast('📸 Photo Strava obligatoire !');
+  const btn=document.getElementById('rBtn');
+  btn.disabled=true; btn.textContent='⏳ Upload...';
+  document.getElementById('rResult').innerHTML='<div style="color:rgba(255,255,255,.6);font-size:.8rem">🔄 Upload de la photo...</div>';
+  let photoUrl;
+  try { photoUrl=await cloudUpload(runPhoto); } catch(e){ btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';document.getElementById('rResult').innerHTML=`<div style="color:#ff6b6b;font-size:.8rem">❌ ${e.message}</div>`;return; }
+  document.getElementById('rResult').innerHTML='<div style="color:rgba(255,255,255,.6);font-size:.8rem">🔄 Sauvegarde...</div>';
+  const vma = Math.round((dist/1000)/(total/3600)*10)/10;
+  try {
+    await FS.addDoc(FS.collection(DB,'perfs'),{group,player,dist,totalSec:total,testName:test,vma,photoUrl,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});
+  } catch(e){ btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';document.getElementById('rResult').innerHTML=`<div style="color:#ff6b6b;font-size:.8rem">❌ Firestore : ${e.message}</div>`;return; }
+  document.getElementById('rResult').innerHTML=`<div style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:10px;padding:14px;text-align:center"><div style="color:#ffd700;font-size:1.5rem;font-weight:800">${vma} km/h</div><div style="color:rgba(255,255,255,.7);font-size:.82rem;margin-top:4px">${test} · ${dist}m en ${Math.floor(total/60)}'${String(total%60).padStart(2,'0')}"</div><div style="color:rgba(255,215,0,.6);font-size:.72rem;margin-top:6px">✅ Enregistré ! Classement mis à jour.</div></div>`;
+  document.getElementById('rDist').value='';document.getElementById('rMin').value='';document.getElementById('rSec').value='';document.getElementById('rTest').value='';
+  document.getElementById('rPhotoPreview').innerHTML='';document.getElementById('rPhotoZone').style.borderColor='rgba(255,255,255,.25)';document.getElementById('rPhotoIn').value='';runPhoto=null;
+  btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';
+  toast('✅ VMA '+vma+' km/h enregistrée !');
+}
+
+// ── CLASSEMENT VMA ───────────────────────────────────
+function renderLeaderboard() {
+  const el=document.getElementById('lboard'); if(!el)return;
+  if (!perfs.length){el.innerHTML='<div class="empty"><div class="ic">🏃</div>Aucune performance</div>';return;}
+  const best={};
+  perfs.forEach(p=>{if(!best[p.player]||p.vma>best[p.player].vma)best[p.player]=p;});
+  const sorted=Object.values(best).sort((a,b)=>b.vma-a.vma);
+  const maxV=sorted[0].vma;
+  const medals=['🥇','🥈','🥉'];
+  function av(name,size=38){
+    const u=profiles[name];
+    return u?`<img src="${u}" class="lb-av" style="width:${size}px;height:${size}px">`:`<div class="lb-av-init" style="width:${size}px;height:${size}px">${name.charAt(0).toUpperCase()}</div>`;
+  }
+  // Podium
+  const top=sorted.slice(0,3);
+  const order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
+  const oidx=order.map(p=>sorted.indexOf(p));
+  const hts=['80px','100px','65px'];
+  const cols=['#C0C0C0','#FFD700','#CD7F32'];
+  let pod=`<div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:20px;padding:0 8px">`;
+  order.forEach((p,i)=>{
+    const r=oidx[i];
+    pod+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+      ${av(p.player,r===0?58:46)}
+      <div style="font-weight:800;font-size:.78rem;color:#111;text-align:center;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.player}</div>
+      <div style="font-weight:800;font-size:.82rem;color:var(--red)">${p.vma} km/h</div>
+      <div style="width:100%;height:${hts[r]||'50px'};background:${cols[r]||'#ddd'};border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:1.3rem">${medals[r]||''}</div>
+    </div>`;
+  });
+  pod+='</div>';
+  // Barres
+  let bars='<div>';
+  sorted.forEach((p,i)=>{
+    const pct=Math.round(p.vma/maxV*100);
+    bars+=`<div class="lb-bar">
+      <div style="width:24px;text-align:center;font-size:.82rem">${medals[i]||(i+1)+'.'}</div>
+      ${av(p.player,34)}
+      <div style="flex:1">
+        <div style="font-size:.78rem;font-weight:700;color:#111;margin-bottom:2px">${p.player}</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--red)"></div></div>
+        <div style="font-size:.7rem;color:var(--muted)">${p.testName||''}${p.date?' · '+fmtDate(p.date):''}</div>
+      </div>
+      <div style="font-size:.85rem;font-weight:800;color:var(--red);min-width:54px;text-align:right">${p.vma} km/h</div>
+    </div>`;
+  });
+  bars+='</div>';
+  el.innerHTML=pod+bars;
+}
+
+function renderPerfHist() {
+  const el=document.getElementById('perfHist');if(!el)return;
+  if(!perfs.length){el.innerHTML='<div class="empty"><div class="ic">📋</div>Aucune donnée</div>';return;}
+  const s=[...perfs].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+  el.innerHTML=s.map(p=>`<div style="padding:10px 0;border-bottom:1px solid #ffd6d6">
+    <div style="display:flex;align-items:center;justify-content:space-between;font-size:.85rem">
+      <div><b style="color:#111">${p.player}</b> <span style="color:var(--muted)">${p.testName||''}</span>
+      <div style="font-size:.73rem;color:var(--muted)">${fmtDate(p.date)} · ${p.dist}m · ${Math.floor(p.totalSec/60)}'${String(p.totalSec%60).padStart(2,'0')}"</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><b style="color:var(--red)">${p.vma} km/h</b>
+      <button class="btn btn-del btn-sm" onclick="delPerf('${p.id}')">🗑️</button></div>
+    </div>
+    ${p.photoUrl?`<img src="${p.photoUrl}" onclick="window.open('${p.photoUrl}','_blank')" style="width:100%;max-height:110px;object-fit:cover;border-radius:6px;margin-top:6px;cursor:pointer"/>`:''}</div>`).join('');
+}
+
+async function delPerf(id){
+  if(!confirm('Supprimer ?'))return;
+  await FS.deleteDoc(FS.doc(DB,'perfs',id));
+  toast('🗑️ Supprimé');
+}
+
+// ── UTILS ────────────────────────────────────────────
+function fmtDate(d){
+  if(!d)return'';const[y,m,j]=d.split('-');
+  return`${parseInt(j)} ${'jan fév mar avr mai juin juil août sep oct nov déc'.split(' ')[parseInt(m)-1]} ${y}`;
+}
+let _t;
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');
+  clearTimeout(_t);_t=setTimeout(()=>el.classList.remove('on'),3200);
+}
+</script>
+</body>
+</html>
