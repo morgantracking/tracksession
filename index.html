@@ -134,22 +134,43 @@ input[type=file]{display:none}
 
 <!-- GATE -->
 <script>
-function enter(g){
-  var gate=document.getElementById('gate');
-  var hdr=document.getElementById('hdr');
-  var mn=document.getElementById('main');
-  if(!window._fbReady){
-    window._pendingGroup=g;
-    gate.querySelector('p').textContent='⏳ Connexion en cours...';
-    return;
-  }
-  window._group=g;
-  gate.style.display='none';
-  hdr.style.display='flex';
-  mn.style.display='block';
-  document.getElementById('grpSel').value=g;
-  if(window._loadGroup)window._loadGroup();
-}
+var _queue=[];
+function enter(g){if(window._fbReady){window._enter(g);}else{window._pendingGroup=g;document.querySelector('#gate p').textContent='⏳ Connexion...';}}
+function _realGoTab(t){if(window._goTab)window._goTab(t);}
+function _realAskPin(){if(window._askPin)window._askPin();}
+function _realSwitchGroup(g){if(window._switchGroup)window._switchGroup(g);}
+function _realPk(k){if(window._pk)window._pk(k);}
+function _realCloseModal(id){if(window._closeModal)window._closeModal(id);}
+function _realSwitchPerfTab(t){if(window._switchPerfTab)window._switchPerfTab(t);}
+function _realSwitchHistTab(t){if(window._switchHistTab)window._switchHistTab(t);}
+function _realOnPlayerSelect(){if(window._onPlayerSelect)window._onPlayerSelect();}
+function _realAddPlayer(){if(window._addPlayer)window._addPlayer();}
+function addEx(e){if(window._addEx)window._addEx(e);}
+function delEx(id){if(window._delEx)window._delEx(id);}
+function upEx(id,k,v){if(window._upEx)window._upEx(id,k,v);}
+function prevExVid(id,i){if(window._prevExVid)window._prevExVid(id,i);}
+function createSession(){if(window._createSession)window._createSession();}
+function openLibrary(){if(window._openLibrary)window._openLibrary();}
+function _realTogglePl(n){if(window._togglePl)window._togglePl(n);}
+function _realRemovePl(n){if(window._removePl)window._removePl(n);}
+function _realAddSubgroup(){if(window._addSubgroup)window._addSubgroup();}
+function _realOpenSgAssign(id){if(window._openSgAssign)window._openSgAssign(id);}
+function _realToggleSgPl(n){if(window._toggleSgPl)window._toggleSgPl(n);}
+function _realSaveSgAssign(){if(window._saveSgAssign)window._saveSgAssign();}
+function _realDelSubgroup(id){if(window._delSubgroup)window._delSubgroup(id);}
+function delSession(id,t){if(window._delSession)window._delSession(id,t);}
+function openDup(id){if(window._openDup)window._openDup(id);}
+function confirmDup(){if(window._confirmDup)window._confirmDup();}
+function openPlModal(s,p){if(window._openPlModal)window._openPlModal(s,p);}
+function selFeel(s,f,el){if(window._selFeel)window._selFeel(s,f,el);}
+function uploadSerie(s,p,e,si,i){if(window._uploadSerie)window._uploadSerie(s,p,e,si,i);}
+function finalize(s,p){if(window._finalize)window._finalize(s,p);}
+function uploadProfile(p,i){if(window._uploadProfile)window._uploadProfile(p,i);}
+function onRunPhoto(i){if(window._onRunPhoto)window._onRunPhoto(i);}
+function _realSubmitRun(){if(window._submitRun)window._submitRun();}
+function _realSubmitSalle(){if(window._submitSalle)window._submitSalle();}
+function _realSelRpe(n){if(window._selRpe)window._selRpe(n);}
+function likeEx(e){if(window._likeEx)window._likeEx(e);}
 </script>
 <div id="gate">
   <div class="logo" style="font-size:1.5rem;margin-bottom:5px">⚽ Track<span>Session</span></div>
@@ -423,6 +444,21 @@ window.addEventListener('fb-ready',()=>{
   window._db=window.DB;
   fbReady=true;
   window._fbReady=true;
+  // Enregistre toutes les fonctions globalement
+  window._enter=function(g){group=g;document.getElementById('gate').style.display='none';document.getElementById('hdr').style.display='flex';document.getElementById('main').style.display='block';document.getElementById('grpSel').value=g;loadGroup();};
+  window._goTab=_realGoTab;window._askPin=_realAskPin;window._switchGroup=_realSwitchGroup;
+  window._pk=_realPk;window._closeModal=_realCloseModal;window._switchPerfTab=_realSwitchPerfTab;
+  window._switchHistTab=_realSwitchHistTab;window._onPlayerSelect=_realOnPlayerSelect;
+  window._addPlayer=_realAddPlayer;window._addEx=addEx;window._delEx=delEx;
+  window._upEx=upEx;window._prevExVid=prevExVid;window._createSession=createSession;
+  window._openLibrary=openLibrary;window._togglePl=_realTogglePl;window._removePl=_realRemovePl;
+  window._addSubgroup=_realAddSubgroup;window._openSgAssign=_realOpenSgAssign;
+  window._toggleSgPl=_realToggleSgPl;window._saveSgAssign=_realSaveSgAssign;
+  window._delSubgroup=_realDelSubgroup;window._delSession=delSession;window._openDup=openDup;
+  window._confirmDup=confirmDup;window._openPlModal=_realOpenPlModal;window._selFeel=_realSelFeel;
+  window._uploadSerie=_realUploadSerie;window._finalize=_realFinalize;window._uploadProfile=_realUploadProfile;
+  window._onRunPhoto=_realOnRunPhoto;window._submitRun=_realSubmitRun;window._submitSalle=_realSubmitSalle;
+  window._selRpe=_realSelRpe;window._likeEx=_realLikeEx;
   document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
   buildRpeRow();addEx();
   const pg=window._pendingGroup||pendingGroup;
@@ -439,7 +475,7 @@ window.addEventListener('fb-ready',()=>{
 // ── GATE ─────────────────────────────────────────────
 let fbReady=false;let pendingGroup=null;
 window._fbReady=false;
-function switchGroup(g){
+function _realSwitchGroup(g){
   group=g;isCoach=false;
   document.getElementById('plPick').value='';
   document.getElementById('plView').innerHTML='<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">👆</div>Sélectionne ton nom</div>';
@@ -506,9 +542,9 @@ function listenSubgroups(){
 }
 
 // ── PIN ───────────────────────────────────────────────
-function askPin(){if(isCoach){goTab('coach');return;}pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';document.getElementById('pinModal').classList.add('on');}
-function closeModal(id){document.getElementById(id).classList.remove('on');}
-function pk(k){
+function _realAskPin(){if(isCoach){goTab('coach');return;}pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';document.getElementById('pinModal').classList.add('on');}
+function _realCloseModal(id){document.getElementById(id).classList.remove('on');}
+function _realPk(k){
   if(k==='⌫'){pinEntry=pinEntry.slice(0,-1);updPinDots();return;}
   if(pinEntry.length>=4)return;
   pinEntry+=k;updPinDots();
@@ -520,7 +556,7 @@ function pk(k){
 function updPinDots(){document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('on',i<pinEntry.length));}
 
 // ── TABS ─────────────────────────────────────────────
-function goTab(t){
+function _realGoTab(t){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   document.getElementById('sec-'+t).classList.add('on');
@@ -533,13 +569,13 @@ function goTab(t){
     if(isCoach){renderPerfHist();renderSalleHist();}
   }
 }
-function switchPerfTab(t){
+function _realSwitchPerfTab(t){
   document.getElementById('perf-global').style.display=t==='global'?'block':'none';
   document.getElementById('perf-salle').style.display=t==='salle'?'block':'none';
   document.getElementById('ptab-global').classList.toggle('on',t==='global');
   document.getElementById('ptab-salle').classList.toggle('on',t==='salle');
 }
-function switchHistTab(t){
+function _realSwitchHistTab(t){
   document.getElementById('perfHist').style.display=t==='run'?'block':'none';
   document.getElementById('salleHist').style.display=t==='salle'?'block':'none';
   document.getElementById('htab-run').classList.toggle('on',t==='run');
@@ -547,7 +583,7 @@ function switchHistTab(t){
 }
 
 // ── SOUS-GROUPES ─────────────────────────────────────
-async function addSubgroup(){
+async function _realAddSubgroup(){
   const n=document.getElementById('sgName').value.trim();
   if(!n)return toast('Entre un nom de sous-groupe !');
   if(subgroups.find(s=>s.name===n))return toast('Ce sous-groupe existe déjà !');
@@ -584,18 +620,18 @@ function openSgAssign(sgId){
   </div>`;
   document.getElementById('sgModal').classList.add('on');
 }
-function toggleSgPl(n){
+function _realToggleSgPl(n){
   const el=document.getElementById('sgpl_'+n.replace(/\s/g,'_'));
   if(sgAssignPlayers.has(n)){sgAssignPlayers.delete(n);el.style.background='var(--chalk)';el.style.color='#111';el.style.borderColor='#e0d0d0';}
   else{sgAssignPlayers.add(n);el.style.background='var(--red)';el.style.color='#fff';el.style.borderColor='var(--red)';}
 }
-async function saveSgAssign(){
+async function _realSaveSgAssign(){
   const sg=subgroups.find(s=>s.id===sgAssignId);if(!sg)return;
   sg.players=[...sgAssignPlayers];
   await window.DB.collection('subgroups').doc(group).set({list:subgroups});
   closeModal('sgModal');toast('✅ Sous-groupe mis à jour !');
 }
-async function delSubgroup(id){
+async function _realDelSubgroup(id){
   if(!confirm('Supprimer ce sous-groupe ?'))return;
   subgroups=subgroups.filter(s=>s.id!==id);
   await window.DB.collection('subgroups').doc(group).set({list:subgroups});
@@ -614,12 +650,12 @@ function renderPlSelGrid(){
   g.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-top:6px">`+
     players.map(p=>`<div onclick="togglePl('${p}')" style="padding:6px;border-radius:7px;border:1.5px solid ${selectedPl.has(p)?'var(--red)':'#e0d0d0'};background:${selectedPl.has(p)?'var(--red)':'var(--chalk)'};cursor:pointer;text-align:center;font-size:.75rem;font-weight:600;color:${selectedPl.has(p)?'#fff':'#111'};transition:all .15s">${p}</div>`).join('')+'</div>';
 }
-function togglePl(n){if(selectedPl.has(n))selectedPl.delete(n);else selectedPl.add(n);renderPlSelGrid();}
+function _realTogglePl(n){if(selectedPl.has(n))selectedPl.delete(n);else selectedPl.add(n);renderPlSelGrid();}
 function renderPlList(){
   const el=document.getElementById('plList');if(!el)return;
   el.innerHTML=players.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px;background:#ffe5e5;border-radius:20px;padding:4px 10px;font-size:.76rem;font-weight:600">⚽ ${p} <span onclick="removePl('${p}')" style="cursor:pointer;color:#c0392b">✕</span></span>`).join('')||'<span style="color:var(--muted);font-size:.78rem">Aucun joueur</span>';
 }
-async function addPlayer(){
+async function _realAddPlayer(){
   const n=document.getElementById('newPl').value.trim();
   if(!n)return toast('Entre un nom !');
   if(players.length>=36)return toast('Maximum 36 joueurs');
@@ -628,7 +664,7 @@ async function addPlayer(){
   await window.DB.collection('groups').doc(group).set({players},{merge:true});
   document.getElementById('newPl').value='';toast('✅ '+n+' ajouté !');
 }
-async function removePl(n){
+async function _realRemovePl(n){
   if(!confirm('Supprimer '+n+' ?'))return;
   players=players.filter(p=>p!==n);
   await window.DB.collection('groups').doc(group).set({players},{merge:true});
@@ -732,7 +768,7 @@ async function delSession(id,title){
 }
 
 // ── MODAL JOUEUR COACH ───────────────────────────────
-function openPlModal(sid,player){
+function _realOpenPlModal(sid,player){
   const s=sessions.find(x=>x.id===sid);if(!s)return;
   const resp=s.responses?.[player];
   document.getElementById('plModalName').textContent='⚽ '+player;
@@ -762,7 +798,7 @@ function openPlModal(sid,player){
 }
 
 // ── VUE JOUEUR ───────────────────────────────────────
-function onPlayerSelect(){
+function _realOnPlayerSelect(){
   const p=document.getElementById('plPick').value;
   document.getElementById('runWrap').style.display=p?'block':'none';
   // Affiche salle seulement si le joueur est dans un sous-groupe
@@ -870,7 +906,7 @@ function renderPlayerView(player){
   el.innerHTML=html;
 }
 
-function selFeel(sid,f,el){feelings[sid]=f;el.closest('.feel-row').querySelectorAll('.feel-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function _realSelFeel(sid,f,el){feelings[sid]=f;el.closest('.feel-row').querySelectorAll('.feel-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
 
 // ── TIMER RÉCUPÉRATION ───────────────────────────────
 let timerInterval=null;
@@ -893,7 +929,7 @@ function startRecupTimer(seconds,containerEl){
 function fmt2(n){return String(n).padStart(2,'0');}
 
 // ── UPLOAD SÉRIE ─────────────────────────────────────
-async function uploadSerie(sid,player,ei,si,inp){
+async function _realUploadSerie(sid,player,ei,si,inp){
   const file=inp.files[0];if(!file)return;
   if(!isOnline)return toast('Pas de connexion !');
   const prog=document.getElementById('prog_'+sid+'_'+ei+'_'+si);
@@ -925,7 +961,7 @@ async function uploadSerie(sid,player,ei,si,inp){
 }
 
 // ── FINALISER ─────────────────────────────────────────
-async function finalize(sid,player){
+async function _realFinalize(sid,player){
   const f=feelings[sid];if(!f)return toast('Choisis ton ressenti !');
   const c=document.getElementById('com_'+sid)?.value.trim()||'';
   const sess=sessions.find(s=>s.id===sid);
@@ -937,7 +973,7 @@ async function finalize(sid,player){
 }
 
 // ── PHOTO PROFIL ─────────────────────────────────────
-async function uploadProfile(player,inp){
+async function _realUploadProfile(player,inp){
   const f=inp.files[0];if(!f)return;
   toast('⏳ Upload photo...');
   let url;try{url=await cloudUpload(f);}catch(e){return toast('Erreur : '+e.message);}
@@ -946,14 +982,14 @@ async function uploadProfile(player,inp){
 }
 
 // ── RUN FORM ─────────────────────────────────────────
-function onRunPhoto(inp){
+function _realOnRunPhoto(inp){
   const f=inp.files[0];if(!f)return;
   runPhoto=f;
   const url=URL.createObjectURL(f);
   document.getElementById('rPhotoPreview').innerHTML=`<img src="${url}" style="width:100%;border-radius:7px;margin-top:5px;max-height:160px;object-fit:cover"/><div style="font-size:.7rem;color:#ffd700;font-weight:600;margin-top:2px">✅ Photo prête</div>`;
   document.getElementById('rPhotoZone').style.borderColor='#ffd700';
 }
-async function submitRun(){
+async function _realSubmitRun(){
   const player=document.getElementById('plPick').value;
   if(!player)return toast('Sélectionne ton nom !');
   if(!isOnline)return toast('Connexion requise !');
@@ -991,7 +1027,7 @@ function buildRpeRow(){
   row.innerHTML=Array.from({length:10},(_,i)=>i+1).map(n=>`
     <div onclick="selRpe(${n})" id="rpe${n}" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s">${n}</div>`).join('');
 }
-function selRpe(n){
+function _realSelRpe(n){
   selectedRpe=n;
   for(let i=1;i<=10;i++){
     const el=document.getElementById('rpe'+i);if(!el)continue;
@@ -999,7 +1035,7 @@ function selRpe(n){
     el.style.borderColor=i<=n?'var(--red)':'rgba(255,255,255,.3)';
   }
 }
-async function submitSalle(){
+async function _realSubmitSalle(){
   const player=document.getElementById('plPick').value;
   if(!player)return toast('Sélectionne ton nom !');
   const exName=document.getElementById('sExName').value.trim();
