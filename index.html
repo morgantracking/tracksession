@@ -144,6 +144,24 @@ input[type=file]{display:none}
 <div id="offlineBanner">📶 Mode hors ligne — Tes séances sont disponibles mais l'upload est désactivé</div>
 
 <!-- GATE -->
+<script>
+function enter(g){
+  var gate=document.getElementById('gate');
+  var hdr=document.getElementById('hdr');
+  var mn=document.getElementById('main');
+  if(!window._fbReady){
+    window._pendingGroup=g;
+    gate.querySelector('p').textContent='⏳ Connexion en cours...';
+    return;
+  }
+  window._group=g;
+  gate.style.display='none';
+  hdr.style.display='flex';
+  mn.style.display='block';
+  document.getElementById('grpSel').value=g;
+  if(window._loadGroup)window._loadGroup();
+}
+</script>
 <div id="gate">
   <div class="logo" style="font-size:1.5rem;margin-bottom:5px">⚽ Track<span>Session</span></div>
   <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:24px">Choisis ton groupe</p>
@@ -415,30 +433,23 @@ if(!isOnline)document.getElementById('offlineBanner').style.display='block';
 window.addEventListener('fb-ready',()=>{
   DB=window.DB;FS=window.FS;
   fbReady=true;
+  window._fbReady=true;
   document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
   buildRpeRow();addEx();
-  if(pendingGroup){
-    document.querySelectorAll('.gate-btn').forEach(b=>{b.style.opacity='1';});
-    enter(pendingGroup);
+  const pg=window._pendingGroup||pendingGroup;
+  if(pg){
+    group=pg;
+    document.getElementById('gate').style.display='none';
+    document.getElementById('hdr').style.display='flex';
+    document.getElementById('main').style.display='block';
+    document.getElementById('grpSel').value=pg;
+    loadGroup();
   }
 });
 
 // ── GATE ─────────────────────────────────────────────
 let fbReady=false;let pendingGroup=null;
-function enter(g){
-  if(!fbReady){
-    pendingGroup=g;
-    document.querySelectorAll('.gate-btn').forEach(b=>b.style.opacity='.5');
-    document.querySelectorAll('.gate-btn')[0].textContent='⏳ Chargement Firebase...';
-    return;
-  }
-  group=g;
-  document.getElementById('gate').style.display='none';
-  document.getElementById('hdr').style.display='flex';
-  document.getElementById('main').style.display='block';
-  document.getElementById('grpSel').value=g;
-  loadGroup();
-}
+window._fbReady=false;
 function switchGroup(g){
   group=g;isCoach=false;
   document.getElementById('plPick').value='';
