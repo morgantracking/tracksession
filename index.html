@@ -4,9 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>TrackSession</title>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
   const cfg = {
     apiKey:"AIzaSyCtE30QI82f_fBwpgRLQvSyUSE_Nz7L9o8",
     authDomain:"tracksession-b3b50.firebaseapp.com",
@@ -16,8 +16,24 @@
     appId:"1:857549820966:web:124c448c864074e2e782e7"
   };
   window.CN="dgikoz7y4"; window.CP="tackprepaphysique";
-  window.DB=getFirestore(initializeApp(cfg));
-  window.FS={collection,addDoc,doc,setDoc,updateDoc,deleteDoc,onSnapshot,query,where,serverTimestamp};
+  firebase.initializeApp(cfg);
+  const _db = firebase.firestore();
+  window.DB = _db;
+  window.FS = {
+    collection: (db,col) => db.collection(col),
+    addDoc: (ref,data) => ref.add(data),
+    doc: (db,col,id) => db.collection(col).doc(id),
+    setDoc: (ref,data,opts) => opts&&opts.merge ? ref.set(data,{merge:true}) : ref.set(data),
+    updateDoc: (ref,data) => ref.update(data),
+    deleteDoc: (ref) => ref.delete(),
+    onSnapshot: (ref,cb) => ref.onSnapshot(snap => {
+      if(snap.docs){cb({docs:snap.docs.map(d=>({id:d.id,data:()=>d.data(),exists:()=>d.exists}))});}
+      else{cb({exists:()=>snap.exists,data:()=>snap.data(),id:snap.id});}
+    }),
+    query: (ref,...args) => { let q=ref; args.forEach(a=>{if(a&&a._type==='where')q=q.where(a.f,a.op,a.v);}); return q; },
+    where: (f,op,v) => ({_type:'where',f,op,v}),
+    serverTimestamp: () => firebase.firestore.FieldValue.serverTimestamp()
+  };
   window.dispatchEvent(new Event("fb-ready"));
 </script>
 <style>
@@ -440,16 +456,14 @@ function loadGroup(){
   listenPlayers();listenSessions();listenPerfs();listenSallePerfs();listenProfiles();listenSubgroups();
 }
 
-// ── FIRESTORE LISTENERS ──────────────────────────────
 function listenPlayers(){
-  unsubPl=FS.onSnapshot(FS.doc(DB,'groups',group),snap=>{
-    players=snap.exists()?(snap.data().players||[]):[];
+  unsubPl=_db.collection('groups').doc(group).onSnapshot(snap=>{
+    players=snap.exists?(snap.data().players||[]):[];
     renderPlList();renderPlSelGrid();fillPickers();
   });
 }
 function listenSessions(){
-  const q=FS.query(FS.collection(DB,'sessions'),FS.where('group','==',group));
-  unsubSess=FS.onSnapshot(q,snap=>{
+  unsubSess=_db.collection('sessions').where('group','==',group).onSnapshot(snap=>{
     sessions=snap.docs.map(d=>({id:d.id,...d.data()}));
     sessions.sort((a,b)=>{
       const ta=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0;
@@ -463,30 +477,28 @@ function listenSessions(){
   });
 }
 function listenPerfs(){
-  const q=FS.query(FS.collection(DB,'perfs'),FS.where('group','==',group));
-  unsubPerfs=FS.onSnapshot(q,snap=>{
+  unsubPerfs=_db.collection('perfs').where('group','==',group).onSnapshot(snap=>{
     perfs=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderLeaderboard();if(isCoach)renderPerfHist();
   });
 }
 function listenSallePerfs(){
-  const q=FS.query(FS.collection(DB,'salleperfs'),FS.where('group','==',group));
-  unsubSalle=FS.onSnapshot(q,snap=>{
+  unsubSalle=_db.collection('salleperfs').where('group','==',group).onSnapshot(snap=>{
     sallePerfs=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderSalleBoard();if(isCoach)renderSalleHist();
   });
 }
 function listenProfiles(){
-  unsubProf=FS.onSnapshot(FS.doc(DB,'profiles',group),snap=>{
-    profiles=snap.exists()?(snap.data()||{}):{};
+  unsubProf=_db.collection('profiles').doc(group).onSnapshot(snap=>{
+    profiles=snap.exists?(snap.data()||{}):{};
     renderLeaderboard();renderSalleBoard();
     const pp=document.getElementById('plPick');
     if(pp&&pp.value)renderPlayerView(pp.value);
   });
 }
 function listenSubgroups(){
-  unsubSg=FS.onSnapshot(FS.doc(DB,'subgroups',group),snap=>{
-    subgroups=snap.exists()?(snap.data().list||[]):[];
+  unsubSg=_db.collection('subgroups').doc(group).onSnapshot(snap=>{
+    subgroups=snap.exists?(snap.data().list||[]):[];
     renderSgList();fillSgPicker();
     const pp=document.getElementById('plPick');
     if(pp&&pp.value)onPlayerSelect();
@@ -540,7 +552,7 @@ async function addSubgroup(){
   if(!n)return toast('Entre un nom de sous-groupe !');
   if(subgroups.find(s=>s.name===n))return toast('Ce sous-groupe existe déjà !');
   subgroups.push({id:'sg_'+Date.now(),name:n,players:[]});
-  await FS.setDoc(FS.doc(DB,'subgroups',group),{list:subgroups});
+  await _db.collection('subgroups').doc(group).set({list:subgroups});
   document.getElementById('sgName').value='';
   toast('✅ Sous-groupe "'+n+'" créé !');
 }
@@ -580,13 +592,13 @@ function toggleSgPl(n){
 async function saveSgAssign(){
   const sg=subgroups.find(s=>s.id===sgAssignId);if(!sg)return;
   sg.players=[...sgAssignPlayers];
-  await FS.setDoc(FS.doc(DB,'subgroups',group),{list:subgroups});
+  await _db.collection('subgroups').doc(group).set({list:subgroups});
   closeModal('sgModal');toast('✅ Sous-groupe mis à jour !');
 }
 async function delSubgroup(id){
   if(!confirm('Supprimer ce sous-groupe ?'))return;
   subgroups=subgroups.filter(s=>s.id!==id);
-  await FS.setDoc(FS.doc(DB,'subgroups',group),{list:subgroups});
+  await _db.collection('subgroups').doc(group).set({list:subgroups});
   toast('🗑️ Sous-groupe supprimé');
 }
 
@@ -613,13 +625,13 @@ async function addPlayer(){
   if(players.length>=36)return toast('Maximum 36 joueurs');
   if(players.includes(n))return toast('Joueur déjà dans la liste');
   players.push(n);
-  await FS.setDoc(FS.doc(DB,'groups',group),{players},{merge:true});
+  await _db.collection('groups').doc(group).set({players},{merge:true});
   document.getElementById('newPl').value='';toast('✅ '+n+' ajouté !');
 }
 async function removePl(n){
   if(!confirm('Supprimer '+n+' ?'))return;
   players=players.filter(p=>p!==n);
-  await FS.setDoc(FS.doc(DB,'groups',group),{players},{merge:true});
+  await _db.collection('groups').doc(group).set({players},{merge:true});
 }
 
 // ── EXERCISES BUILDER ────────────────────────────────
@@ -674,7 +686,7 @@ async function createSession(){
   }
   const convoqued=[...selectedPl];
   const responses={};convoqued.forEach(p=>responses[p]=null);
-  await FS.addDoc(FS.collection(DB,'sessions'),{title,date,desc,group,sgId:sgId||null,exercises:exData,convoqued,responses,createdAt:FS.serverTimestamp()});
+  await _db.collection('sessions').add({title,date,desc,group,sgId:sgId||null,exercises:exData,convoqued,responses,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('sTitle').value='';document.getElementById('sDesc').value='';
   exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';
   selectedPl.clear();renderPlSelGrid();addEx();
@@ -716,7 +728,7 @@ function renderSessList(){
 }
 async function delSession(id,title){
   if(!confirm('Supprimer "'+title+'" ?'))return;
-  await FS.deleteDoc(FS.doc(DB,'sessions',id));toast('🗑️ Séance supprimée');
+  await _db.collection('sessions').doc(id).delete();toast('🗑️ Séance supprimée');
 }
 
 // ── MODAL JOUEUR COACH ───────────────────────────────
@@ -896,7 +908,7 @@ async function uploadSerie(sid,player,ei,si,inp){
   if(!sess.responses[player].exercises)sess.responses[player].exercises={};
   if(!sess.responses[player].exercises['ex'+ei])sess.responses[player].exercises['ex'+ei]={};
   sess.responses[player].exercises['ex'+ei]['set'+si]={url,at:new Date().toISOString()};
-  await FS.updateDoc(FS.doc(DB,'sessions',sid),{['responses.'+player]:sess.responses[player]});
+  await _db.collection('sessions').doc(sid).update({['responses.'+player]:sess.responses[player]});
   toast('✅ Série '+si+' validée !');
   // Démarrer le timer de récup si ce n'est pas la dernière série
   const ex=sess.exercises[ei];
@@ -920,7 +932,7 @@ async function finalize(sid,player){
   if(!sess.responses[player])sess.responses[player]={};
   sess.responses[player].feeling=f;sess.responses[player].comment=c;
   sess.responses[player].done=true;sess.responses[player].at=new Date().toISOString();
-  await FS.updateDoc(FS.doc(DB,'sessions',sid),{['responses.'+player]:sess.responses[player]});
+  await _db.collection('sessions').doc(sid).update({['responses.'+player]:sess.responses[player]});
   toast('🎉 Séance validée !');setTimeout(()=>renderPlayerView(player),300);
 }
 
@@ -929,7 +941,7 @@ async function uploadProfile(player,inp){
   const f=inp.files[0];if(!f)return;
   toast('⏳ Upload photo...');
   let url;try{url=await cloudUpload(f);}catch(e){return toast('Erreur : '+e.message);}
-  await FS.setDoc(FS.doc(DB,'profiles',group),{[player]:url},{merge:true});
+  await _db.collection('profiles').doc(group).set({[player]:url},{merge:true});
   toast('✅ Photo mise à jour !');
 }
 
@@ -959,7 +971,7 @@ async function submitRun(){
   catch(e){btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';document.getElementById('rResult').innerHTML=`<div style="color:#ff6b6b;font-size:.78rem">❌ ${e.message}</div>`;return;}
   document.getElementById('rResult').innerHTML='<div style="color:rgba(255,255,255,.6);font-size:.78rem">🔄 Sauvegarde...</div>';
   const vma=Math.round((dist/1000)/(total/3600)*10)/10;
-  try{await FS.addDoc(FS.collection(DB,'perfs'),{group,player,dist,totalSec:total,testName:test,vma,photoUrl,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});}
+  try{await _db.collection('perfs').add({group,player,dist,totalSec:total,testName:test,vma,photoUrl,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});}
   catch(e){btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';document.getElementById('rResult').innerHTML=`<div style="color:#ff6b6b;font-size:.78rem">❌ ${e.message}</div>`;return;}
   document.getElementById('rResult').innerHTML=`<div style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:9px;padding:12px;text-align:center">
     <div style="color:#ffd700;font-size:1.4rem;font-weight:800">${vma} km/h</div>
@@ -999,7 +1011,7 @@ async function submitSalle(){
   const charge=Math.round(weight*reps*sets);
   const btn=document.getElementById('salleBtn');btn.disabled=true;btn.textContent='⏳ Sauvegarde...';
   try{
-    await FS.addDoc(FS.collection(DB,'salleperfs'),{group,player,exName,sets,reps,weight,rpe:selectedRpe,charge,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});
+    await _db.collection('salleperfs').add({group,player,exName,sets,reps,weight,rpe:selectedRpe,charge,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});
     document.getElementById('salleResult').innerHTML=`<div style="background:rgba(100,100,255,.15);border:1px solid rgba(100,100,255,.4);border-radius:9px;padding:12px;text-align:center">
       <div style="color:#a0a0ff;font-size:1.3rem;font-weight:800">${charge} kg</div>
       <div style="color:rgba(255,255,255,.7);font-size:.78rem;margin-top:3px">Charge totale — ${exName}</div>
