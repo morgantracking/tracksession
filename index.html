@@ -131,9 +131,9 @@ input[type=file]{display:none}
 <div id="gate">
   <div class="logo" style="font-size:1.5rem;margin-bottom:5px">⚽ Track<span>Session</span></div>
   <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:24px">Choisis ton groupe</p>
-  <button class="gate-btn" onclick="enterWhenReady('foot')">⚽ Football</button>
-  <button class="gate-btn" onclick="enterWhenReady('hand')">🤾 Handball</button>
-  <button class="gate-btn" onclick="enterWhenReady('individuel')">💪 Préparation individuelle</button>
+  <button class="gate-btn" onclick="enter('foot')">⚽ Football</button>
+  <button class="gate-btn" onclick="enter('hand')">🤾 Handball</button>
+  <button class="gate-btn" onclick="enter('individuel')">💪 Préparation individuelle</button>
 </div>
 
 <header id="hdr">
@@ -401,16 +401,21 @@ window.addEventListener('fb-ready',()=>{
   fbReady=true;
   document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
   buildRpeRow();addEx();
-  if(pendingGroup)enter(pendingGroup);
+  if(pendingGroup){
+    document.querySelectorAll('.gate-btn').forEach(b=>{b.style.opacity='1';});
+    enter(pendingGroup);
+  }
 });
 
 // ── GATE ─────────────────────────────────────────────
 let fbReady=false;let pendingGroup=null;
-function enterWhenReady(g){
-  if(fbReady){enter(g);}
-  else{pendingGroup=g;document.querySelector('.gate-btn').textContent='⏳ Chargement...';}
-}
 function enter(g){
+  if(!fbReady){
+    pendingGroup=g;
+    document.querySelectorAll('.gate-btn').forEach(b=>b.style.opacity='.5');
+    document.querySelectorAll('.gate-btn')[0].textContent='⏳ Chargement Firebase...';
+    return;
+  }
   group=g;
   document.getElementById('gate').style.display='none';
   document.getElementById('hdr').style.display='flex';
