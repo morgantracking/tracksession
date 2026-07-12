@@ -501,7 +501,7 @@ function renderPlList() {
 async function addPlayer() {
   const n = document.getElementById('newPl').value.trim();
   if (!n) return toast('Entre un nom !');
-  if (players.length >= 24) return toast('Maximum 36 joueurs');
+  if (players.length >= 36) return toast('Maximum 36 joueurs');
   if (players.includes(n)) return toast('Joueur déjà dans la liste');
   players.push(n);
   await FS.setDoc(FS.doc(DB,'groups',group), {players}, {merge:true});
