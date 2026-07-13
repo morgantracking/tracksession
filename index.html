@@ -7,16 +7,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyCtE30QI82f_fBwpgRLQvSyUSE_Nz7L9o8",
-  authDomain:"tracksession-b3b50.firebaseapp.com",
-  projectId:"tracksession-b3b50",
-  storageBucket:"tracksession-b3b50.firebasestorage.app",
-  messagingSenderId:"857549820966",
-  appId:"1:857549820966:web:124c448c864074e2e782e7"
-});
+firebase.initializeApp({apiKey:"AIzaSyCtE30QI82f_fBwpgRLQvSyUSE_Nz7L9o8",authDomain:"tracksession-b3b50.firebaseapp.com",projectId:"tracksession-b3b50",storageBucket:"tracksession-b3b50.firebasestorage.app",messagingSenderId:"857549820966",appId:"1:857549820966:web:124c448c864074e2e782e7"});
 var db=firebase.firestore();
-var CN="dgikoz7y4",CP="tackprepaphysique";
+window.CN="dgikoz7y4";window.CP="tackprepaphysique";
 </script>
 <style>
 :root{--red:#cc1a1a;--chalk:#f7f4f4;--muted:#7a5a5a;--r:12px}
@@ -84,8 +77,6 @@ textarea{resize:vertical;min-height:60px}
 .uprog{height:6px;background:#ffd6d6;border-radius:99px;overflow:hidden;display:none;margin-top:5px}
 .uprog-fill{height:100%;background:var(--red);border-radius:99px;width:0%}
 .lb-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.av-img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--red);flex-shrink:0}
-.av-init{width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.8rem;flex-shrink:0}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;color:#fff;padding:10px 20px;border-radius:99px;font-size:.85rem;font-weight:600;z-index:999;transition:transform .3s;white-space:nowrap}
 #toast.on{transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;padding:28px 14px;color:var(--muted)}
@@ -99,54 +90,11 @@ input[type=file]{display:none}
 <div id="gate">
   <div class="logo" style="font-size:1.5rem;margin-bottom:5px">⚽ Track<span>Session</span></div>
   <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:24px">Choisis ton groupe</p>
-  <script>
-  function enter(g){
-    group=g;
-    document.getElementById('gate').style.display='none';
-    document.getElementById('hdr').style.display='flex';
-    document.getElementById('main').style.display='block';
-    document.getElementById('grpSel').value=g;
-    document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
-    exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';addEx();
-    loadGroup();
-  }
-  </script>
   <button class="gate-btn" onclick="enter('foot')">⚽ Football</button>
   <button class="gate-btn" onclick="enter('hand')">🤾 Handball</button>
   <button class="gate-btn" onclick="enter('individuel')">💪 Préparation individuelle</button>
 </div>
 
-<script>
-function switchGroup(g){if(window._app)window._app.switchGroup(g);}
-function askPin(){if(window._app)window._app.askPin();}
-function goTab(t){if(window._app)window._app.goTab(t);}
-function pk(k){if(window._app)window._app.pk(k);}
-function closeModal(id){if(window._app)window._app.closeModal(id);}
-function switchPerfTab(t){if(window._app)window._app.switchPerfTab(t);}
-function addEx(e){if(window._app)window._app.addEx(e);}
-function openLibrary(){if(window._app)window._app.openLibrary();}
-function togglePl(n){if(window._app)window._app.togglePl(n);}
-function addPlayer(){if(window._app)window._app.addPlayer();}
-function removePl(n){if(window._app)window._app.removePl(n);}
-function upEx(id,k,v){if(window._app)window._app.upEx(id,k,v);}
-function delEx(id){if(window._app)window._app.delEx(id);}
-function prevExVid(id,i){if(window._app)window._app.prevExVid(id,i);}
-function createSession(){if(window._app)window._app.createSession();}
-function delSession(id,t){if(window._app)window._app.delSession(id,t);}
-function openDup(id){if(window._app)window._app.openDup(id);}
-function confirmDup(){if(window._app)window._app.confirmDup();}
-function openPlModal(s,p){if(window._app)window._app.openPlModal(s,p);}
-function onPlayerSelect(){if(window._app)window._app.onPlayerSelect();}
-function selFeel(s,f,el){if(window._app)window._app.selFeel(s,f,el);}
-function uploadSerie(s,p,e,si,i){if(window._app)window._app.uploadSerie(s,p,e,si,i);}
-function finalizeSession(s,p){if(window._app)window._app.finalizeSession(s,p);}
-function uploadProfile(p,i){if(window._app)window._app.uploadProfile(p,i);}
-function onRunPhoto(i){if(window._app)window._app.onRunPhoto(i);}
-function submitRun(){if(window._app)window._app.submitRun();}
-function addExFromLib(i){if(window._app)window._app.addExFromLib(i);}
-function delPerf(id){if(window._app)window._app.delPerf(id);}
-function likeEx(b){if(window._app)window._app.likeEx(b);}
-</script>
 <header id="hdr">
   <div class="logo">⚽ Track<span>Session</span></div>
   <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
@@ -164,7 +112,6 @@ function likeEx(b){if(window._app)window._app.likeEx(b);}
 </header>
 
 <main id="main">
-
 <div id="sec-coach" class="sec">
   <div class="card">
     <h2>📋 Nouvelle séance</h2>
@@ -228,68 +175,51 @@ function likeEx(b){if(window._app)window._app.likeEx(b);}
     <div id="lboard"><div class="empty"><div class="ic">🏃</div>Aucune performance</div></div>
   </div>
   <div class="card" id="perfCoach" style="display:none">
-    <h2>📋 Historique courses (Coach)</h2>
+    <h2>📋 Historique (Coach)</h2>
     <div id="perfHist"></div>
   </div>
 </div>
-
 </main>
 
-<!-- MODALS -->
 <div class="overlay" id="plModal"><div class="modal"><div class="mhead"><div class="mtitle" id="plModalName"></div><button class="cls" onclick="closeModal('plModal')">✕</button></div><div id="plModalBody"></div></div></div>
-
-<div class="overlay center" id="pinModal">
-  <div class="modal" style="max-width:310px">
-    <div class="mhead"><div class="mtitle">🔐 Accès Coach</div><button class="cls" onclick="closeModal('pinModal')">✕</button></div>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Code PIN à 4 chiffres</p>
-    <div style="display:flex;gap:9px;justify-content:center;margin-bottom:16px" id="pinDots">
-      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      <button class="btn" onclick="pk('1')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">1</button>
-      <button class="btn" onclick="pk('2')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">2</button>
-      <button class="btn" onclick="pk('3')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">3</button>
-      <button class="btn" onclick="pk('4')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">4</button>
-      <button class="btn" onclick="pk('5')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">5</button>
-      <button class="btn" onclick="pk('6')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">6</button>
-      <button class="btn" onclick="pk('7')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">7</button>
-      <button class="btn" onclick="pk('8')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">8</button>
-      <button class="btn" onclick="pk('9')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">9</button>
-      <div></div>
-      <button class="btn" onclick="pk('0')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">0</button>
-      <button class="btn" onclick="pk('⌫')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">⌫</button>
-    </div>
-    <div id="pinErr" style="color:#c0392b;font-size:.78rem;text-align:center;margin-top:9px;display:none">Code incorrect !</div>
-  </div>
-</div>
-
+<div class="overlay center" id="pinModal"><div class="modal" style="max-width:310px"><div class="mhead"><div class="mtitle">🔐 Accès Coach</div><button class="cls" onclick="closeModal('pinModal')">✕</button></div><p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Code PIN à 4 chiffres</p><div style="display:flex;gap:9px;justify-content:center;margin-bottom:16px" id="pinDots"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px"><button class="btn" onclick="pk('1')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">1</button><button class="btn" onclick="pk('2')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">2</button><button class="btn" onclick="pk('3')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">3</button><button class="btn" onclick="pk('4')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">4</button><button class="btn" onclick="pk('5')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">5</button><button class="btn" onclick="pk('6')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">6</button><button class="btn" onclick="pk('7')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">7</button><button class="btn" onclick="pk('8')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">8</button><button class="btn" onclick="pk('9')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">9</button><div></div><button class="btn" onclick="pk('0')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">0</button><button class="btn" onclick="pk('⌫')" style="justify-content:center;padding:13px;font-size:1.1rem;font-weight:700;background:var(--chalk)">⌫</button></div><div id="pinErr" style="color:#c0392b;font-size:.78rem;text-align:center;margin-top:9px;display:none">Code incorrect !</div></div></div>
 <div class="overlay" id="libModal"><div class="modal"><div class="mhead"><div class="mtitle">❤️ Bibliothèque</div><button class="cls" onclick="closeModal('libModal')">✕</button></div><div id="libBody"></div></div></div>
 <div class="overlay" id="dupModal"><div class="modal"><div class="mhead"><div class="mtitle">📋 Dupliquer</div><button class="cls" onclick="closeModal('dupModal')">✕</button></div><p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Le formulaire sera pré-rempli.</p><div id="dupBody"></div><button class="btn btn-red" onclick="confirmDup()">📋 Copier cette séance</button></div></div>
-
 <div id="toast"></div>
 
 <script>
-var group=null,isCoach=false;
-var players=[],sessions=[],perfs=[],profiles={};
-var selectedPl={},exList=[],exCount=0,feelings={};
-var runPhoto=null,dupTarget=null,pinEntry='';
-var library=JSON.parse(localStorage.getItem('ts_lib')||'[]');
-var unsubSess,unsubPerfs,unsubPl,unsubProf;
-var PIN='2311';
+var fs=null;
+let group=null,isCoach=false;
+let players=[],sessions=[],perfs=[],profiles={};
+let selectedPl={},exList=[],exCount=0,feelings={};
+let runPhoto=null,dupTarget=null,pinEntry='';
+let library=JSON.parse(localStorage.getItem('ts_lib')||'[]');
+let unsubSess,unsubPerfs,unsubPl,unsubProf;
+const PIN='2311';
 
-// ── CLOUDINARY ───────────────────────────────────────
-function cloudUpload(file){
-  return new Promise(function(resolve,reject){
-    var fd=new FormData();
-    fd.append('file',file);fd.append('upload_preset',CP);
-    fetch('https://api.cloudinary.com/v1_1/'+CN+'/auto/upload',{method:'POST',body:fd})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        if(d.error)return reject(new Error(d.error.message));
-        if(!d.secure_url)return reject(new Error('Pas de URL'));
-        resolve(d.secure_url);
-      }).catch(reject);
-  });
+window.addEventListener('DOMContentLoaded',function(){
+  db=window._db;fs=window._fs;
+  document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
+  addEx();
+});
+
+async function cloudUpload(file){
+  const fd=new FormData();
+  fd.append('file',file);fd.append('upload_preset',window.CP);
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${window.CN}/auto/upload`,{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  if(!d.secure_url)throw new Error('Pas de URL');
+  return d.secure_url;
+}
+
+function enter(g){
+  group=g;
+  document.getElementById('gate').style.display='none';
+  document.getElementById('hdr').style.display='flex';
+  document.getElementById('main').style.display='block';
+  document.getElementById('grpSel').value=g;
+  loadGroup();
 }
 
 function switchGroup(g){
@@ -300,66 +230,52 @@ function switchGroup(g){
   loadGroup();toast('Groupe : '+grpLabel(g));
 }
 
-function grpLabel(g){
-  return g==='foot'?'⚽ Football':g==='hand'?'🤾 Handball':'💪 Individuel';
-}
+function grpLabel(g){return g==='foot'?'⚽ Football':g==='hand'?'🤾 Handball':'💪 Individuel';}
 
-// ── LOAD GROUP ────────────────────────────────────────
 function loadGroup(){
-  if(unsubSess)unsubSess();
-  if(unsubPerfs)unsubPerfs();
-  if(unsubPl)unsubPl();
-  if(unsubProf)unsubProf();
+  if(unsubSess)unsubSess();if(unsubPerfs)unsubPerfs();if(unsubPl)unsubPl();if(unsubProf)unsubProf();
   players=[];sessions=[];perfs=[];profiles={};
   listenPlayers();listenSessions();listenPerfs();listenProfiles();
 }
 
-// ── LISTENERS ────────────────────────────────────────
 function listenPlayers(){
-  unsubPl=db.collection('groups').doc(group).onSnapshot(function(snap){
+  unsubPl=db.collection('groups').doc(group).onSnapshot(snap=>{
     players=snap.exists?(snap.data().players||[]):[];
     renderPlList();renderPlSelGrid();fillPickers();
   });
 }
 
 function listenSessions(){
-  unsubSess=db.collection('sessions').where('group','==',group).onSnapshot(function(snap){
-    sessions=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-    sessions.sort(function(a,b){
-      var ta=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0;
-      var tb=b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0;
+  unsubSess=db.collection('sessions').where('group','==',group).onSnapshot(snap=>{
+    sessions=snap.docs.map(d=>({id:d.id,...d.data()}));
+    sessions.sort((a,b)=>{
+      const ta=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0;
+      const tb=b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0;
       return tb-ta;
     });
     renderSessList();
-    var pp=document.getElementById('plPick');
+    const pp=document.getElementById('plPick');
     if(pp&&pp.value)renderPlayerView(pp.value);
   });
 }
 
 function listenPerfs(){
-  unsubPerfs=db.collection('perfs').where('group','==',group).onSnapshot(function(snap){
-    perfs=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-    renderLeaderboard();
-    if(isCoach)renderPerfHist();
+  unsubPerfs=db.collection('perfs').where('group','==',group).onSnapshot(snap=>{
+    perfs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderLeaderboard();if(isCoach)renderPerfHist();
   });
 }
 
 function listenProfiles(){
-  unsubProf=db.collection('profiles').doc(group).onSnapshot(function(snap){
+  unsubProf=db.collection('profiles').doc(group).onSnapshot(snap=>{
     profiles=snap.exists?(snap.data()||{}):{};
     renderLeaderboard();
-    var pp=document.getElementById('plPick');
+    const pp=document.getElementById('plPick');
     if(pp&&pp.value)renderPlayerView(pp.value);
   });
 }
 
-// ── PIN ───────────────────────────────────────────────
-function askPin(){
-  if(isCoach){goTab('coach');return;}
-  pinEntry='';updPinDots();
-  document.getElementById('pinErr').style.display='none';
-  document.getElementById('pinModal').classList.add('on');
-}
+function askPin(){if(isCoach){goTab('coach');return;}pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';document.getElementById('pinModal').classList.add('on');}
 function closeModal(id){document.getElementById(id).classList.remove('on');}
 function pk(k){
   if(k==='⌫'){pinEntry=pinEntry.slice(0,-1);updPinDots();return;}
@@ -367,15 +283,14 @@ function pk(k){
   pinEntry+=k;updPinDots();
   if(pinEntry.length===4){
     if(pinEntry===PIN){isCoach=true;closeModal('pinModal');goTab('coach');toast('✅ Accès coach !');}
-    else{document.getElementById('pinErr').style.display='block';setTimeout(function(){pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';},900);}
+    else{document.getElementById('pinErr').style.display='block';setTimeout(()=>{pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';},900);}
   }
 }
-function updPinDots(){document.querySelectorAll('.pin-dot').forEach(function(d,i){d.classList.toggle('on',i<pinEntry.length);});}
+function updPinDots(){document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('on',i<pinEntry.length));}
 
-// ── TABS ─────────────────────────────────────────────
 function goTab(t){
-  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
-  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   document.getElementById('sec-'+t).classList.add('on');
   document.getElementById('tab-'+t).classList.add('on');
   if(t==='perf'){
@@ -386,159 +301,117 @@ function goTab(t){
   }
 }
 
-// ── PLAYERS ──────────────────────────────────────────
 function fillPickers(){
-  var pp=document.getElementById('plPick');
-  var cur=pp?pp.value:'';
-  pp.innerHTML='<option value="">— Sélectionne ton nom —</option>'+
-    players.map(function(p){return '<option value="'+p+'"'+(p===cur?' selected':'')+'>'+p+'</option>';}).join('');
+  const pp=document.getElementById('plPick');const cur=pp?pp.value:'';
+  pp.innerHTML='<option value="">— Sélectionne ton nom —</option>'+players.map(p=>`<option value="${p}"${p===cur?' selected':''}>${p}</option>`).join('');
 }
 function renderPlSelGrid(){
-  var g=document.getElementById('plSelGrid');if(!g)return;
+  const g=document.getElementById('plSelGrid');if(!g)return;
   if(!players.length){g.innerHTML='<p style="color:var(--muted);font-size:.78rem">Ajoute des joueurs en bas</p>';return;}
   g.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-top:6px">'+
-    players.map(function(p){
-      var s=selectedPl[p];
-      return '<div onclick="togglePl(\''+p+'\')" style="padding:6px;border-radius:7px;border:1.5px solid '+(s?'var(--red)':'#e0d0d0')+';background:'+(s?'var(--red)':'var(--chalk)')+';cursor:pointer;text-align:center;font-size:.75rem;font-weight:600;color:'+(s?'#fff':'#111')+'">'+p+'</div>';
-    }).join('')+'</div>';
+    players.map(p=>`<div onclick="togglePl('${p}')" style="padding:6px;border-radius:7px;border:1.5px solid ${selectedPl[p]?'var(--red)':'#e0d0d0'};background:${selectedPl[p]?'var(--red)':'var(--chalk)'};cursor:pointer;text-align:center;font-size:.75rem;font-weight:600;color:${selectedPl[p]?'#fff':'#111'}">${p}</div>`).join('')+'</div>';
 }
 function togglePl(n){if(selectedPl[n])delete selectedPl[n];else selectedPl[n]=true;renderPlSelGrid();}
 function renderPlList(){
-  var el=document.getElementById('plList');if(!el)return;
-  el.innerHTML=players.map(function(p){
-    return '<span style="display:inline-flex;align-items:center;gap:4px;background:#ffe5e5;border-radius:20px;padding:4px 10px;font-size:.76rem;font-weight:600">⚽ '+p+' <span onclick="removePl(\''+p+'\')" style="cursor:pointer;color:#c0392b">✕</span></span>';
-  }).join('')||'<span style="color:var(--muted);font-size:.78rem">Aucun joueur</span>';
+  const el=document.getElementById('plList');if(!el)return;
+  el.innerHTML=players.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px;background:#ffe5e5;border-radius:20px;padding:4px 10px;font-size:.76rem;font-weight:600">⚽ ${p} <span onclick="removePl('${p}')" style="cursor:pointer;color:#c0392b">✕</span></span>`).join('')||'<span style="color:var(--muted);font-size:.78rem">Aucun joueur</span>';
 }
-function addPlayer(){
-  var n=document.getElementById('newPl').value.trim();
+async function addPlayer(){
+  const n=document.getElementById('newPl').value.trim();
   if(!n)return toast('Entre un nom !');
   if(players.length>=36)return toast('Maximum 36 joueurs');
-  if(players.indexOf(n)>=0)return toast('Joueur déjà dans la liste');
+  if(players.includes(n))return toast('Joueur déjà dans la liste');
   players.push(n);
-  db.collection('groups').doc(group).set({players:players},{merge:true});
-  document.getElementById('newPl').value='';
-  toast('✅ '+n+' ajouté !');
+  await db.collection('groups').doc(group).set({players},{merge:true});
+  document.getElementById('newPl').value='';toast('✅ '+n+' ajouté !');
 }
-function removePl(n){
+async function removePl(n){
   if(!confirm('Supprimer '+n+' ?'))return;
-  players=players.filter(function(p){return p!==n;});
-  db.collection('groups').doc(group).set({players:players},{merge:true});
+  players=players.filter(p=>p!==n);
+  await db.collection('groups').doc(group).set({players},{merge:true});
 }
 
-// ── EXERCISES ────────────────────────────────────────
 function addEx(e){
-  exCount++;var id='e'+exCount;
-  var ex={id:id,name:e?e.name:'',desc:e?e.desc:'',sets:e?(e.sets||3):3,reps:e?(e.reps||10):10,rest:e?(e.rest||60):60,file:null,url:e?e.url:null};
+  exCount++;const id='e'+exCount;
+  const ex={id,name:e?e.name:'',desc:e?e.desc:'',sets:e?(e.sets||3):3,reps:e?(e.reps||10):10,rest:e?(e.rest||60):60,file:null,url:e?e.url:null};
   exList.push(ex);
-  var div=document.createElement('div');
-  div.className='ex-block';div.id='blk_'+id;
-  div.innerHTML='<div class="ex-head">'+
-    '<div class="ex-num">'+exList.length+'</div>'+
-    '<input type="text" value="'+(ex.name||'')+'" placeholder="Nom de l\'exercice" oninput="upEx(\''+id+'\',\'name\',this.value)" style="flex:1;margin:0 7px"/>'+
-    '<button class="btn btn-del btn-sm" onclick="delEx(\''+id+'\')">✕</button></div>'+
-    '<div class="ex-grid">'+
-    '<div><label style="margin-top:0">Séries</label><select onchange="upEx(\''+id+'\',\'sets\',parseInt(this.value))">'+
-    [1,2,3,4,5,6].map(function(n){return '<option'+(n===ex.sets?' selected':'')+'>'+n+'</option>';}).join('')+
-    '</select></div>'+
-    '<div><label style="margin-top:0">Rép.</label><input type="number" value="'+ex.reps+'" min="1" max="99" oninput="upEx(\''+id+'\',\'reps\',parseInt(this.value))"/></div>'+
-    '<div><label style="margin-top:0">Récup (s)</label><input type="number" value="'+ex.rest+'" min="0" max="300" oninput="upEx(\''+id+'\',\'rest\',parseInt(this.value))"/></div></div>'+
-    '<textarea placeholder="Consignes... (optionnel)" oninput="upEx(\''+id+'\',\'desc\',this.value)" style="min-height:48px;font-size:.82rem;margin-top:7px">'+(ex.desc||'')+'</textarea>'+
-    '<div class="uz" onclick="document.getElementById(\'vf_'+id+'\').click()"><span class="ic">🎬</span>Vidéo démo (optionnel)</div>'+
-    '<input type="file" id="vf_'+id+'" accept="video/*" onchange="prevExVid(\''+id+'\',this)"/>'+
-    '<div id="ev_'+id+'">'+(ex.url?'<video src="'+ex.url+'" controls style="width:100%;border-radius:6px;margin-top:5px;max-height:120px;object-fit:cover"></video>':'')+'</div>';
-  document.getElementById('exBuilder').appendChild(div);
-  reNumEx();
+  const div=document.createElement('div');div.className='ex-block';div.id='blk_'+id;
+  div.innerHTML=`<div class="ex-head"><div class="ex-num">${exList.length}</div><input type="text" value="${ex.name||''}" placeholder="Nom de l'exercice" oninput="upEx('${id}','name',this.value)" style="flex:1;margin:0 7px"/><button class="btn btn-del btn-sm" onclick="delEx('${id}')">✕</button></div>
+  <div class="ex-grid"><div><label style="margin-top:0">Séries</label><select onchange="upEx('${id}','sets',parseInt(this.value))">${[1,2,3,4,5,6].map(n=>`<option${n===ex.sets?' selected':''}>${n}</option>`).join('')}</select></div>
+  <div><label style="margin-top:0">Rép.</label><input type="number" value="${ex.reps}" min="1" max="99" oninput="upEx('${id}','reps',parseInt(this.value))"/></div>
+  <div><label style="margin-top:0">Récup (s)</label><input type="number" value="${ex.rest}" min="0" max="300" oninput="upEx('${id}','rest',parseInt(this.value))"/></div></div>
+  <textarea placeholder="Consignes... (optionnel)" oninput="upEx('${id}','desc',this.value)" style="min-height:48px;font-size:.82rem;margin-top:7px">${ex.desc||''}</textarea>
+  <div class="uz" onclick="document.getElementById('vf_${id}').click()"><span class="ic">🎬</span>Vidéo démo (optionnel)</div>
+  <input type="file" id="vf_${id}" accept="video/*" onchange="prevExVid('${id}',this)"/>
+  <div id="ev_${id}">${ex.url?`<video src="${ex.url}" controls style="width:100%;border-radius:6px;margin-top:5px;max-height:120px;object-fit:cover"></video>`:''}</div>`;
+  document.getElementById('exBuilder').appendChild(div);reNumEx();
 }
-function upEx(id,k,v){var e=exList.find(function(x){return x.id===id;});if(e)e[k]=v;}
-function delEx(id){exList=exList.filter(function(x){return x.id!==id;});var b=document.getElementById('blk_'+id);if(b)b.remove();reNumEx();}
-function reNumEx(){document.querySelectorAll('.ex-num').forEach(function(el,i){el.textContent=i+1;});}
+function upEx(id,k,v){const e=exList.find(x=>x.id===id);if(e)e[k]=v;}
+function delEx(id){exList=exList.filter(x=>x.id!==id);document.getElementById('blk_'+id)?.remove();reNumEx();}
+function reNumEx(){document.querySelectorAll('.ex-num').forEach((el,i)=>el.textContent=i+1);}
 function prevExVid(id,inp){
-  var f=inp.files[0];if(!f)return;
-  var e=exList.find(function(x){return x.id===id;});if(e)e.file=f;
-  document.getElementById('ev_'+id).innerHTML='<video src="'+URL.createObjectURL(f)+'" controls style="width:100%;border-radius:6px;margin-top:5px;max-height:120px;object-fit:cover"></video>';
+  const f=inp.files[0];if(!f)return;
+  const e=exList.find(x=>x.id===id);if(e)e.file=f;
+  document.getElementById('ev_'+id).innerHTML=`<video src="${URL.createObjectURL(f)}" controls style="width:100%;border-radius:6px;margin-top:5px;max-height:120px;object-fit:cover"></video>`;
 }
 
-// ── CREATE SESSION ────────────────────────────────────
-function createSession(){
-  var title=document.getElementById('sTitle').value.trim();
-  var date=document.getElementById('sDate').value;
-  var desc=document.getElementById('sDesc').value.trim();
+async function createSession(){
+  const title=document.getElementById('sTitle').value.trim();
+  const date=document.getElementById('sDate').value;
+  const desc=document.getElementById('sDesc').value.trim();
   if(!title)return toast('Titre obligatoire !');
   if(!date)return toast('Date obligatoire !');
   if(!Object.keys(selectedPl).length)return toast('Sélectionne au moins un joueur !');
   toast('⏳ Envoi en cours...');
-  var uploads=exList.filter(function(ex){return ex.file;}).map(function(ex){
-    return cloudUpload(ex.file).then(function(url){ex.url=url;});
-  });
-  Promise.all(uploads).then(function(){
-    var exData=exList.map(function(ex){return {name:ex.name||'Exercice',desc:ex.desc,sets:ex.sets||3,reps:ex.reps||10,rest:ex.rest||60,url:ex.url||null};});
-    var convoqued=Object.keys(selectedPl);
-    var responses={};convoqued.forEach(function(p){responses[p]=null;});
-    db.collection('sessions').add({title:title,date:date,desc:desc,group:group,exercises:exData,convoqued:convoqued,responses:responses,createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-      document.getElementById('sTitle').value='';document.getElementById('sDesc').value='';
-      exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';
-      selectedPl={};renderPlSelGrid();addEx();toast('✅ Séance envoyée !');
-    });
-  }).catch(function(e){toast('Erreur : '+e.message);});
+  const exData=[];
+  for(const ex of exList){
+    let url=null;
+    if(ex.file){try{url=await cloudUpload(ex.file);}catch(e){toast('Erreur vidéo : '+e.message);return;}}
+    exData.push({name:ex.name||'Exercice',desc:ex.desc,sets:ex.sets||3,reps:ex.reps||10,rest:ex.rest||60,url});
+  }
+  const convoqued=Object.keys(selectedPl);
+  const responses={};convoqued.forEach(p=>responses[p]=null);
+  await db.collection('sessions').add({title,date,desc,group,exercises:exData,convoqued,responses,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('sTitle').value='';document.getElementById('sDesc').value='';
+  exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';
+  selectedPl={};renderPlSelGrid();addEx();toast('✅ Séance envoyée !');
 }
 
-// ── RENDER SESSIONS ──────────────────────────────────
 function renderSessList(){
-  var el=document.getElementById('sessList');if(!el)return;
+  const el=document.getElementById('sessList');if(!el)return;
   if(!sessions.length){el.innerHTML='<div class="empty"><div class="ic">🗂️</div>Aucune séance</div>';return;}
-  el.innerHTML=sessions.map(function(s){
-    var tot=s.convoqued?s.convoqued.length:0;
-    var don=s.convoqued?s.convoqued.filter(function(p){return s.responses&&s.responses[p]&&s.responses[p].done;}).length:0;
-    var pct=tot?Math.round(don/tot*100):0;
-    var exSum=(s.exercises||[]).map(function(e,i){return '<span style="display:inline-flex;align-items:center;gap:4px;background:#fff0f0;border-radius:5px;padding:2px 7px;font-size:.72rem;margin:2px"><b style="color:var(--red)">Ex'+(i+1)+'</b>'+(e.name||'Exercice')+(e.url?'🎬':'')+'</span>';}).join('');
-    var chips=(s.convoqued||[]).map(function(p){
-      var done=s.responses&&s.responses[p]&&s.responses[p].done;
-      return '<div class="pl-chip '+(done?'done':'wait')+'" onclick="openPlModal(\''+s.id+'\',\''+p+'\')"><div class="av">'+(done?'✅':'⏳')+'</div><span>'+p+'</span><span style="font-size:.62rem;opacity:.8">'+(done?'Validé':'Attente')+'</span></div>';
+  el.innerHTML=sessions.map(s=>{
+    const tot=s.convoqued?.length||0;
+    const don=s.convoqued?.filter(p=>s.responses?.[p]?.done).length||0;
+    const pct=tot?Math.round(don/tot*100):0;
+    const exSum=(s.exercises||[]).map((e,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;background:#fff0f0;border-radius:5px;padding:2px 7px;font-size:.72rem;margin:2px"><b style="color:var(--red)">Ex${i+1}</b>${e.name||'Exercice'}${e.url?'🎬':''}</span>`).join('');
+    const chips=(s.convoqued||[]).map(p=>{
+      const done=s.responses?.[p]?.done;
+      return `<div class="pl-chip ${done?'done':'wait'}" onclick="openPlModal('${s.id}','${p}')"><div class="av">${done?'✅':'⏳'}</div><span>${p}</span><span style="font-size:.62rem;opacity:.8">${done?'Validé':'Attente'}</span></div>`;
     }).join('');
-    return '<div class="sess-item">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:7px">'+
-      '<div><div style="font-weight:700;font-size:.9rem">📋 '+s.title+'</div>'+
-      '<div style="font-size:.72rem;color:var(--muted);margin-top:2px">📅 '+fmtDate(s.date)+'</div></div>'+
-      '<div style="display:flex;gap:4px;flex-shrink:0">'+
-      '<button class="btn btn-del btn-sm" onclick="delSession(\''+s.id+'\',\''+s.title.replace(/'/g,"\\'")+'\')">🗑️</button>'+
-      '<button class="btn btn-sm btn-lib" onclick="openDup(\''+s.id+'\')">📋</button></div></div>'+
-      '<div style="margin:6px 0;display:flex;flex-wrap:wrap;gap:3px">'+exSum+'</div>'+
-      '<div style="font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:3px"><span>Validations</span><span>'+don+'/'+tot+'</span></div>'+
-      '<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
-      '<div class="pl-grid">'+chips+'</div></div>';
+    return `<div class="sess-item"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:7px"><div><div style="font-weight:700;font-size:.9rem">📋 ${s.title}</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">📅 ${fmtDate(s.date)}</div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-del btn-sm" onclick="delSession('${s.id}','${(s.title||'').replace(/'/g,"\\'")}')">🗑️</button><button class="btn btn-sm btn-lib" onclick="openDup('${s.id}')">📋</button></div></div><div style="margin:6px 0;display:flex;flex-wrap:wrap;gap:3px">${exSum}</div><div style="font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:3px"><span>Validations</span><span>${don}/${tot}</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><div class="pl-grid">${chips}</div></div>`;
   }).join('');
 }
 
-function delSession(id,title){
-  if(!confirm('Supprimer "'+title+'" ?'))return;
-  db.collection('sessions').doc(id).delete();toast('🗑️ Supprimée');
+async function delSession(id,title){
+  if(!confirm(`Supprimer "${title}" ?`))return;
+  await db.collection('sessions').doc(id).delete();toast('🗑️ Supprimée');
 }
 
-// ── MODAL COACH ──────────────────────────────────────
 function openPlModal(sid,player){
-  var s=sessions.find(function(x){return x.id===sid;});if(!s)return;
-  var resp=s.responses&&s.responses[player];
+  const s=sessions.find(x=>x.id===sid);if(!s)return;
+  const resp=s.responses?.[player];
   document.getElementById('plModalName').textContent='⚽ '+player;
-  var html='';
-  if(!resp||(!resp.exercises&&!resp.done)){
-    html='<div class="empty"><div class="ic">⏳</div>Pas encore commencé</div>';
-  } else {
-    if(resp.done)html+='<div style="background:#fff0f0;border-radius:8px;padding:9px;margin-bottom:10px"><b style="color:var(--red)">✅ Séance terminée</b>'+(resp.feeling?'<div style="font-size:.78rem;color:var(--muted);margin-top:2px">Ressenti : '+resp.feeling+'</div>':'')+'</div>';
-    (s.exercises||[]).forEach(function(e,ei){
-      var exR=resp&&resp.exercises&&resp.exercises['ex'+ei];
-      html+='<div style="margin-bottom:12px">'+
-        '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'+
-        '<span style="background:var(--red);color:#fff;border-radius:5px;padding:2px 8px;font-size:.7rem;font-weight:800">Ex'+(ei+1)+'</span>'+
-        '<b style="font-size:.88rem">'+(e.name||'Exercice')+'</b>'+
-        '<button style="background:none;border:none;cursor:pointer;font-size:1rem;padding:2px" onclick="likeEx(this)">❤️</button>'+
-        '<span style="margin-left:auto;font-size:.72rem;color:var(--muted)">'+(exR?Object.keys(exR).length:0)+'/'+(e.sets||3)+' séries</span></div>';
-      for(var si=1;si<=(e.sets||3);si++){
-        var sd=exR&&exR['set'+si];
-        if(sd&&sd.url){
-          html+='<div style="margin-bottom:5px"><div style="font-size:.7rem;color:var(--red);font-weight:700;margin-bottom:2px">✅ Série '+si+'</div><video src="'+sd.url+'" controls playsinline style="width:100%;border-radius:7px;max-height:160px;object-fit:cover"></video></div>';
-        } else {
-          html+='<div style="padding:6px 9px;background:#fafafa;border-radius:5px;margin-bottom:4px;font-size:.76rem;color:var(--muted)">⏳ Série '+si+' — pas encore faite</div>';
-        }
+  let html='';
+  if(!resp||(!resp.exercises&&!resp.done)){html='<div class="empty"><div class="ic">⏳</div>Pas encore commencé</div>';}
+  else{
+    if(resp.done)html+=`<div style="background:#fff0f0;border-radius:8px;padding:9px;margin-bottom:10px"><b style="color:var(--red)">✅ Séance terminée</b>${resp.feeling?`<div style="font-size:.78rem;color:var(--muted);margin-top:2px">Ressenti : ${resp.feeling}</div>`:''}</div>`;
+    (s.exercises||[]).forEach((e,ei)=>{
+      const exR=resp?.exercises?.['ex'+ei];
+      html+=`<div style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span style="background:var(--red);color:#fff;border-radius:5px;padding:2px 8px;font-size:.7rem;font-weight:800">Ex${ei+1}</span><b style="font-size:.88rem">${e.name||'Exercice'}</b><span style="margin-left:auto;font-size:.72rem;color:var(--muted)">${exR?Object.keys(exR).length:0}/${e.sets||3} séries</span></div>`;
+      for(let si=1;si<=(e.sets||3);si++){
+        const sd=exR?.['set'+si];
+        html+=sd?.url?`<div style="margin-bottom:5px"><div style="font-size:.7rem;color:var(--red);font-weight:700;margin-bottom:2px">✅ Série ${si}</div><video src="${sd.url}" controls playsinline style="width:100%;border-radius:7px;max-height:160px;object-fit:cover"></video></div>`:`<div style="padding:6px 9px;background:#fafafa;border-radius:5px;margin-bottom:4px;font-size:.76rem;color:var(--muted)">⏳ Série ${si} — pas encore faite</div>`;
       }
       html+='</div>';
     });
@@ -547,301 +420,180 @@ function openPlModal(sid,player){
   document.getElementById('plModal').classList.add('on');
 }
 
-function likeEx(btn){
-  var block=btn.closest('[style]');
-  toast('❤️ Utilise le bouton depuis la Bibliothèque coach !');
-}
-
-// ── VUE JOUEUR ───────────────────────────────────────
 function onPlayerSelect(){
-  var p=document.getElementById('plPick').value;
+  const p=document.getElementById('plPick').value;
   document.getElementById('runWrap').style.display=p?'block':'none';
   if(p)renderPlayerView(p);
   else document.getElementById('plView').innerHTML='<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">👆</div>Sélectionne ton nom</div>';
 }
 
-function avHTML(name,size){
-  size=size||32;var u=profiles[name];
-  return u?'<img src="'+u+'" style="width:'+size+'px;height:'+size+'px;border-radius:50%;object-fit:cover;border:2px solid var(--red);flex-shrink:0">'
-    :'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:'+(Math.round(size*.4))+'px;flex-shrink:0">'+name.charAt(0).toUpperCase()+'</div>';
+function avHTML(name,size=32){
+  const u=profiles[name];size=size||32;
+  return u?`<img src="${u}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;border:2px solid var(--red);flex-shrink:0">`:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:${Math.round(size*.4)}px;flex-shrink:0">${name.charAt(0).toUpperCase()}</div>`;
 }
 
 function renderPlayerView(player){
-  var el=document.getElementById('plView');
-  var prof=profiles[player];
-  var header='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+
-    avHTML(player,50)+
-    '<div><div style="color:#fff;font-weight:800;font-size:1rem">'+player+'</div>'+
-    '<label for="profIn" style="color:#ff4d4d;font-size:.72rem;cursor:pointer;font-weight:600;display:block;margin-top:4px">📸 '+(prof?'Changer ma photo':'Ajouter une photo')+'</label>'+
-    '<input type="file" id="profIn" accept="image/*" onchange="uploadProfile(\''+player+'\',this)"/></div></div>';
-
-  var mySess=sessions.filter(function(s){return s.convoqued&&s.convoqued.indexOf(player)>=0;});
-  if(!mySess.length){el.innerHTML=header+'<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">📭</div>Aucune séance</div>';return;}
-
-  var html=header;
-  mySess.forEach(function(s){
-    var resp=s.responses&&s.responses[player];
-    var isDone=resp&&resp.done===true;
-    var exHTML='';
-    (s.exercises||[]).forEach(function(e,ei){
-      var exR=resp&&resp.exercises&&resp.exercises['ex'+ei];
-      var setsDone=exR?Object.keys(exR).length:0;
-      var totalSets=e.sets||3;
-      var setsHTML='';
-      for(var si=1;si<=totalSets;si++){
-        var sd=exR&&exR['set'+si];
-        var isNext=!sd&&setsDone===si-1;
-        if(sd){
-          setsHTML+='<div class="set-done"><div style="color:#ff4d4d;font-size:.82rem;font-weight:700">✅ Série '+si+'/'+totalSets+' — '+(e.reps||10)+' rép.</div>'+(sd.url?'<video src="'+sd.url+'" controls playsinline style="width:100%;border-radius:5px;margin-top:5px;max-height:120px;object-fit:cover"></video>':'')+'</div>';
-        } else if(isNext&&!isDone){
-          setsHTML+='<div class="set-next" id="setbox_'+s.id+'_'+ei+'_'+si+'">'+
-            '<div style="color:rgba(255,255,255,.9);font-size:.82rem;font-weight:700;margin-bottom:5px">🎯 Série '+si+'/'+totalSets+' — '+(e.reps||10)+' rép.</div>'+
-            '<div class="uz" onclick="document.getElementById(\'sv_'+s.id+'_'+ei+'_'+si+'\').click()" style="border-color:rgba(255,255,255,.3)"><span class="ic" style="font-size:1.2rem">🎥</span>Filme ta série '+si+'</div>'+
-            '<input type="file" id="sv_'+s.id+'_'+ei+'_'+si+'" accept="video/*" capture="environment" onchange="uploadSerie(\''+s.id+'\',\''+player+'\','+ei+','+si+',this)"/>'+
-            '<div class="uprog" id="prog_'+s.id+'_'+ei+'_'+si+'"><div class="uprog-fill" id="progf_'+s.id+'_'+ei+'_'+si+'"></div></div>'+
-            (e.rest>0?'<div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px">⏱ '+e.rest+'s de récupération entre les séries</div>':'')+'</div>';
-        } else if(!isDone){
-          setsHTML+='<div class="set-lock"><span style="color:rgba(255,255,255,.35);font-size:.76rem">🔒 Série '+si+' — valide d\'abord la précédente</span></div>';
-        }
+  const el=document.getElementById('plView');
+  const prof=profiles[player];
+  let html=`<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">${avHTML(player,50)}<div><div style="color:#fff;font-weight:800;font-size:1rem">${player}</div><label for="profIn" style="color:#ff4d4d;font-size:.72rem;cursor:pointer;font-weight:600;display:block;margin-top:4px">📸 ${prof?'Changer ma photo':'Ajouter une photo'}</label><input type="file" id="profIn" accept="image/*" onchange="uploadProfile('${player}',this)"/></div></div>`;
+  const mySess=sessions.filter(s=>s.convoqued?.includes(player));
+  if(!mySess.length){el.innerHTML=html+'<div class="empty" style="color:rgba(255,255,255,.5)"><div class="ic">📭</div>Aucune séance</div>';return;}
+  mySess.forEach(s=>{
+    const resp=s.responses?.[player];const isDone=resp?.done===true;
+    let exHTML='';
+    (s.exercises||[]).forEach((e,ei)=>{
+      const exR=resp?.exercises?.['ex'+ei];
+      const setsDone=exR?Object.keys(exR).length:0;
+      const totalSets=e.sets||3;let setsHTML='';
+      for(let si=1;si<=totalSets;si++){
+        const sd=exR?.['set'+si];const isNext=!sd&&setsDone===si-1;
+        if(sd){setsHTML+=`<div class="set-done"><div style="color:#ff4d4d;font-size:.82rem;font-weight:700">✅ Série ${si}/${totalSets} — ${e.reps||10} rép.</div>${sd.url?`<video src="${sd.url}" controls playsinline style="width:100%;border-radius:5px;margin-top:5px;max-height:120px;object-fit:cover"></video>`:''}</div>`;}
+        else if(isNext&&!isDone){setsHTML+=`<div class="set-next" id="setbox_${s.id}_${ei}_${si}"><div style="color:rgba(255,255,255,.9);font-size:.82rem;font-weight:700;margin-bottom:5px">🎯 Série ${si}/${totalSets} — ${e.reps||10} rép.</div><div class="uz" onclick="document.getElementById('sv_${s.id}_${ei}_${si}').click()" style="border-color:rgba(255,255,255,.3)"><span class="ic" style="font-size:1.2rem">🎥</span>Filme ta série ${si}</div><input type="file" id="sv_${s.id}_${ei}_${si}" accept="video/*" capture="environment" onchange="uploadSerie('${s.id}','${player}',${ei},${si},this)"/><div class="uprog" id="prog_${s.id}_${ei}_${si}"><div class="uprog-fill" id="progf_${s.id}_${ei}_${si}"></div></div>${e.rest>0?`<div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px">⏱ ${e.rest}s de récupération</div>`:''}</div>`;}
+        else if(!isDone){setsHTML+=`<div class="set-lock"><span style="color:rgba(255,255,255,.35);font-size:.76rem">🔒 Série ${si} — valide d'abord la précédente</span></div>`;}
       }
-      exHTML+='<div class="ex-card">'+
-        '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'+
-        '<span style="background:#ff4d4d;color:#fff;border-radius:5px;padding:2px 8px;font-size:.7rem;font-weight:800">Ex'+(ei+1)+'</span>'+
-        '<span style="font-weight:700;color:#fff;font-size:.88rem">'+(e.name||'Exercice')+'</span>'+
-        '<span style="margin-left:auto;font-size:.7rem;color:#ff4d4d;font-weight:700">'+setsDone+'/'+totalSets+'</span></div>'+
-        (e.desc?'<p style="font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:5px">'+e.desc+'</p>':'')+
-        '<div style="font-size:.72rem;color:rgba(255,255,255,.5)">📊 '+totalSets+'×'+(e.reps||10)+' rép.'+(e.rest?' · ⏱ '+e.rest+'s récup':'')+'</div>'+
-        (e.url?'<video src="'+e.url+'" controls playsinline style="width:100%;border-radius:5px;margin-top:7px;max-height:140px;object-fit:cover"></video>':'')+
-        setsHTML+'</div>';
+      exHTML+=`<div class="ex-card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span style="background:#ff4d4d;color:#fff;border-radius:5px;padding:2px 8px;font-size:.7rem;font-weight:800">Ex${ei+1}</span><span style="font-weight:700;color:#fff;font-size:.88rem">${e.name||'Exercice'}</span><span style="margin-left:auto;font-size:.7rem;color:#ff4d4d;font-weight:700">${setsDone}/${totalSets}</span></div>${e.desc?`<p style="font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:5px">${e.desc}</p>`:''}<div style="font-size:.72rem;color:rgba(255,255,255,.5)">📊 ${totalSets}×${e.reps||10} rép.${e.rest?` · ⏱ ${e.rest}s récup`:''}</div>${e.url?`<video src="${e.url}" controls playsinline style="width:100%;border-radius:5px;margin-top:7px;max-height:140px;object-fit:cover"></video>`:''} ${setsHTML}</div>`;
     });
-
-    var allDone=(s.exercises||[]).length>0&&(s.exercises||[]).every(function(e,ei){
-      var exR=resp&&resp.exercises&&resp.exercises['ex'+ei];
-      return exR&&Object.keys(exR).length>=(e.sets||3);
-    });
-
-    html+='<div class="sess-card">'+
-      '<span class="tag-pill">⚽ Séance</span>'+
-      '<h2 style="color:#fff;font-size:1.1rem;margin-bottom:5px">'+s.title+'</h2>'+
-      '<div style="color:rgba(255,255,255,.6);font-size:.76rem;margin-bottom:9px">📅 '+fmtDate(s.date)+'</div>'+
-      (s.desc?'<p style="color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:10px">'+s.desc+'</p>':'')+
-      exHTML+
-      (isDone?'<div style="background:rgba(255,77,77,.15);border-radius:9px;padding:11px;margin-top:7px"><b style="color:#ff4d4d">✅ Séance validée !</b>'+(resp.feeling?'<div style="color:rgba(255,255,255,.7);font-size:.78rem;margin-top:2px">Ressenti : '+resp.feeling+'</div>':'')+'</div>':'')+
-      (allDone&&!isDone?'<div style="border-top:1px solid rgba(255,255,255,.15);padding-top:12px;margin-top:9px">'+
-        '<div style="color:#ff4d4d;font-weight:700;margin-bottom:7px">🏁 Toutes les séries validées !</div>'+
-        '<div class="feel-row" id="feel_'+s.id+'">'+
-        ['🔥 Excellent','💪 Bien','😐 Moyen','😓 Difficile'].map(function(f){return '<span class="feel-btn" onclick="selFeel(\''+s.id+'\',\''+f+'\',this)">'+f+'</span>';}).join('')+
-        '</div><input type="text" id="com_'+s.id+'" placeholder="Commentaire (optionnel)" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:7px"/>'+
-        '<button class="btn btn-red" onclick="finalizeSession(\''+s.id+'\',\''+player+'\')">✅ Valider ma séance</button></div>':'')+
-      '</div>';
+    const allDone=(s.exercises||[]).length>0&&(s.exercises||[]).every((e,ei)=>{const exR=resp?.exercises?.['ex'+ei];return exR&&Object.keys(exR).length>=(e.sets||3);});
+    html+=`<div class="sess-card"><span class="tag-pill">⚽ Séance</span><h2 style="color:#fff;font-size:1.1rem;margin-bottom:5px">${s.title}</h2><div style="color:rgba(255,255,255,.6);font-size:.76rem;margin-bottom:9px">📅 ${fmtDate(s.date)}</div>${s.desc?`<p style="color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:10px">${s.desc}</p>`:''}${exHTML}${isDone?`<div style="background:rgba(255,77,77,.15);border-radius:9px;padding:11px;margin-top:7px"><b style="color:#ff4d4d">✅ Séance validée !</b>${resp.feeling?`<div style="color:rgba(255,255,255,.7);font-size:.78rem;margin-top:2px">Ressenti : ${resp.feeling}</div>`:''}</div>`:''}${allDone&&!isDone?`<div style="border-top:1px solid rgba(255,255,255,.15);padding-top:12px;margin-top:9px"><div style="color:#ff4d4d;font-weight:700;margin-bottom:7px">🏁 Toutes les séries validées !</div><div class="feel-row" id="feel_${s.id}">${['🔥 Excellent','💪 Bien','😐 Moyen','😓 Difficile'].map(f=>`<span class="feel-btn" onclick="selFeel('${s.id}','${f}',this)">${f}</span>`).join('')}</div><input type="text" id="com_${s.id}" placeholder="Commentaire (optionnel)" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff;margin-top:7px"/><button class="btn btn-red" onclick="finalizeSession('${s.id}','${player}')">✅ Valider ma séance</button></div>`:''}</div>`;
   });
   el.innerHTML=html;
 }
 
-function selFeel(sid,f,el){
-  feelings[sid]=f;
-  el.closest('.feel-row').querySelectorAll('.feel-btn').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');
-}
+function selFeel(sid,f,el){feelings[sid]=f;el.closest('.feel-row').querySelectorAll('.feel-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
 
-// ── UPLOAD SÉRIE ─────────────────────────────────────
-function uploadSerie(sid,player,ei,si,inp){
-  var file=inp.files[0];if(!file)return;
-  var prog=document.getElementById('prog_'+sid+'_'+ei+'_'+si);
-  var progf=document.getElementById('progf_'+sid+'_'+ei+'_'+si);
+async function uploadSerie(sid,player,ei,si,inp){
+  const file=inp.files[0];if(!file)return;
+  const prog=document.getElementById(`prog_${sid}_${ei}_${si}`);
+  const progf=document.getElementById(`progf_${sid}_${ei}_${si}`);
   if(prog)prog.style.display='block';if(progf)progf.style.width='40%';
   toast('⏳ Upload série '+si+'...');
-  cloudUpload(file).then(function(url){
+  try{
+    const url=await cloudUpload(file);
     if(progf)progf.style.width='100%';
-    var sess=sessions.find(function(s){return s.id===sid;});
+    const sess=sessions.find(s=>s.id===sid);
     if(!sess.responses)sess.responses={};
     if(!sess.responses[player])sess.responses[player]={};
     if(!sess.responses[player].exercises)sess.responses[player].exercises={};
     if(!sess.responses[player].exercises['ex'+ei])sess.responses[player].exercises['ex'+ei]={};
-    sess.responses[player].exercises['ex'+ei]['set'+si]={url:url,at:new Date().toISOString()};
-    db.collection('sessions').doc(sid).update({'responses.'+player:sess.responses[player]}).then(function(){
-      toast('✅ Série '+si+' validée !');
-      setTimeout(function(){if(prog)prog.style.display='none';renderPlayerView(player);},400);
-    });
-  }).catch(function(e){toast('❌ '+e.message);if(prog)prog.style.display='none';});
+    sess.responses[player].exercises['ex'+ei]['set'+si]={url,at:new Date().toISOString()};
+    await db.collection('sessions').doc(sid).update({['responses.'+player]:sess.responses[player]});
+    toast('✅ Série '+si+' validée !');
+    setTimeout(()=>{if(prog)prog.style.display='none';renderPlayerView(player);},400);
+  }catch(e){toast('❌ '+e.message);if(prog)prog.style.display='none';}
 }
 
-// ── FINALISER ─────────────────────────────────────────
-function finalizeSession(sid,player){
-  var f=feelings[sid];if(!f)return toast('Choisis ton ressenti !');
-  var c=document.getElementById('com_'+sid);var com=c?c.value.trim():'';
-  var sess=sessions.find(function(s){return s.id===sid;});
+async function finalizeSession(sid,player){
+  const f=feelings[sid];if(!f)return toast('Choisis ton ressenti !');
+  const c=document.getElementById('com_'+sid)?.value.trim()||'';
+  const sess=sessions.find(s=>s.id===sid);
   if(!sess.responses[player])sess.responses[player]={};
-  sess.responses[player].feeling=f;sess.responses[player].comment=com;
+  sess.responses[player].feeling=f;sess.responses[player].comment=c;
   sess.responses[player].done=true;sess.responses[player].at=new Date().toISOString();
-  db.collection('sessions').doc(sid).update({'responses.'+player:sess.responses[player]}).then(function(){
-    toast('🎉 Séance validée !');setTimeout(function(){renderPlayerView(player);},300);
-  });
+  await db.collection('sessions').doc(sid).update({['responses.'+player]:sess.responses[player]});
+  toast('🎉 Séance validée !');setTimeout(()=>renderPlayerView(player),300);
 }
 
-// ── PHOTO PROFIL ─────────────────────────────────────
-function uploadProfile(player,inp){
-  var f=inp.files[0];if(!f)return;
+async function uploadProfile(player,inp){
+  const f=inp.files[0];if(!f)return;
   toast('⏳ Upload photo...');
-  cloudUpload(f).then(function(url){
-    var data={};data[player]=url;
-    db.collection('profiles').doc(group).set(data,{merge:true});
-    toast('✅ Photo mise à jour !');
-  }).catch(function(e){toast('Erreur : '+e.message);});
+  try{const url=await cloudUpload(f);await db.collection('profiles').doc(group).set({[player]:url},{merge:true});toast('✅ Photo mise à jour !');}
+  catch(e){toast('Erreur : '+e.message);}
 }
 
-// ── RUN FORM ─────────────────────────────────────────
 function onRunPhoto(inp){
-  var f=inp.files[0];if(!f)return;
-  runPhoto=f;
-  var url=URL.createObjectURL(f);
-  document.getElementById('rPhotoPreview').innerHTML='<img src="'+url+'" style="width:100%;border-radius:7px;margin-top:5px;max-height:160px;object-fit:cover"/><div style="font-size:.7rem;color:#ffd700;font-weight:600;margin-top:2px">✅ Photo prête</div>';
+  const f=inp.files[0];if(!f)return;runPhoto=f;
+  const url=URL.createObjectURL(f);
+  document.getElementById('rPhotoPreview').innerHTML=`<img src="${url}" style="width:100%;border-radius:7px;margin-top:5px;max-height:160px;object-fit:cover"/><div style="font-size:.7rem;color:#ffd700;font-weight:600;margin-top:2px">✅ Photo prête</div>`;
   document.getElementById('rPhotoZone').style.borderColor='#ffd700';
 }
 
-function submitRun(){
-  var player=document.getElementById('plPick').value;
-  if(!player)return toast('Sélectionne ton nom !');
-  var dist=parseFloat((document.getElementById('rDist').value||'').replace(',','.'));
-  var min=parseInt(document.getElementById('rMin').value||'0')||0;
-  var sec=parseInt(document.getElementById('rSec').value||'0')||0;
-  var test=document.getElementById('rTest').value.trim()||'Course libre';
+async function submitRun(){
+  const player=document.getElementById('plPick').value;if(!player)return toast('Sélectionne ton nom !');
+  const dist=parseFloat((document.getElementById('rDist').value||'').replace(',','.'));
+  const min=parseInt(document.getElementById('rMin').value||'0')||0;
+  const sec=parseInt(document.getElementById('rSec').value||'0')||0;
+  const test=document.getElementById('rTest').value.trim()||'Course libre';
   if(!dist||dist<=0)return toast('Distance invalide !');
-  var total=min*60+sec;if(total<=0)return toast('Temps invalide !');
+  const total=min*60+sec;if(total<=0)return toast('Temps invalide !');
   if(!runPhoto)return toast('📸 Photo Strava obligatoire !');
-  var btn=document.getElementById('rBtn');btn.disabled=true;btn.textContent='⏳ Upload...';
+  const btn=document.getElementById('rBtn');btn.disabled=true;btn.textContent='⏳ Upload...';
   document.getElementById('rResult').innerHTML='<div style="color:rgba(255,255,255,.6);font-size:.78rem">🔄 Upload photo...</div>';
-  cloudUpload(runPhoto).then(function(photoUrl){
+  try{
+    const photoUrl=await cloudUpload(runPhoto);
     document.getElementById('rResult').innerHTML='<div style="color:rgba(255,255,255,.6);font-size:.78rem">🔄 Sauvegarde...</div>';
-    var vma=Math.round((dist/1000)/(total/3600)*10)/10;
-    db.collection('perfs').add({group:group,player:player,dist:dist,totalSec:total,testName:test,vma:vma,photoUrl:photoUrl,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()}).then(function(){
-      document.getElementById('rResult').innerHTML='<div style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:9px;padding:12px;text-align:center"><div style="color:#ffd700;font-size:1.4rem;font-weight:800">'+vma+' km/h</div><div style="color:rgba(255,255,255,.7);font-size:.8rem;margin-top:3px">'+test+' · '+dist+'m en '+Math.floor(total/60)+"'"+fmt2(total%60)+'"</div><div style="color:rgba(255,215,0,.6);font-size:.7rem;margin-top:5px">✅ Classement mis à jour !</div></div>';
-      document.getElementById('rDist').value='';document.getElementById('rMin').value='';document.getElementById('rSec').value='';document.getElementById('rTest').value='';
-      document.getElementById('rPhotoPreview').innerHTML='';document.getElementById('rPhotoZone').style.borderColor='rgba(255,255,255,.25)';
-      document.getElementById('rPhotoIn').value='';runPhoto=null;
-      btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';
-      toast('✅ VMA '+vma+' km/h !');
-    });
-  }).catch(function(e){
-    btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';
-    document.getElementById('rResult').innerHTML='<div style="color:#ff6b6b;font-size:.78rem">❌ '+e.message+'</div>';
-  });
+    const vma=Math.round((dist/1000)/(total/3600)*10)/10;
+    await db.collection('perfs').add({group,player,dist,totalSec:total,testName:test,vma,photoUrl,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()});
+    document.getElementById('rResult').innerHTML=`<div style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:9px;padding:12px;text-align:center"><div style="color:#ffd700;font-size:1.4rem;font-weight:800">${vma} km/h</div><div style="color:rgba(255,255,255,.7);font-size:.8rem;margin-top:3px">${test} · ${dist}m en ${Math.floor(total/60)}'${fmt2(total%60)}"</div></div>`;
+    ['rDist','rMin','rSec','rTest'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rPhotoPreview').innerHTML='';document.getElementById('rPhotoZone').style.borderColor='rgba(255,255,255,.25)';
+    document.getElementById('rPhotoIn').value='';runPhoto=null;btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';
+    toast('✅ VMA '+vma+' km/h !');
+  }catch(e){btn.disabled=false;btn.textContent='📊 Calculer et enregistrer ma VMA';document.getElementById('rResult').innerHTML=`<div style="color:#ff6b6b;font-size:.78rem">❌ ${e.message}</div>`;}
 }
 
-// ── LEADERBOARD ───────────────────────────────────────
 function renderLeaderboard(){
-  var el=document.getElementById('lboard');if(!el)return;
+  const el=document.getElementById('lboard');if(!el)return;
   if(!perfs.length){el.innerHTML='<div class="empty"><div class="ic">🏃</div>Aucune performance</div>';return;}
-  var best={};
-  perfs.forEach(function(p){if(!best[p.player]||p.vma>best[p.player].vma)best[p.player]=p;});
-  var sorted=Object.values(best).sort(function(a,b){return b.vma-a.vma;});
-  var maxV=sorted[0].vma;
-  var medals=['🥇','🥈','🥉'];
-  var top=sorted.slice(0,3);
-  var order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
-  var oidx=order.map(function(p){return sorted.indexOf(p);});
-  var hts=['75px','95px','60px'];var cols=['#C0C0C0','#FFD700','#CD7F32'];
-  var pod='<div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:18px">';
-  order.forEach(function(p,i){
-    var r=oidx[i];
-    pod+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'+
-      avHTML(p.player,r===0?54:42)+
-      '<div style="font-weight:700;font-size:.75rem;color:#111;text-align:center;max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.player+'</div>'+
-      '<div style="font-weight:800;font-size:.8rem;color:var(--red)">'+p.vma+' km/h</div>'+
-      '<div style="width:100%;height:'+hts[r]+';background:'+cols[r]+';border-radius:7px 7px 0 0;display:flex;align-items:center;justify-content:center;font-size:1.2rem">'+(medals[r]||'')+'</div></div>';
+  const best={};perfs.forEach(p=>{if(!best[p.player]||p.vma>best[p.player].vma)best[p.player]=p;});
+  const sorted=Object.values(best).sort((a,b)=>b.vma-a.vma);
+  const maxV=sorted[0].vma;const medals=['🥇','🥈','🥉'];
+  const top=sorted.slice(0,3);
+  const order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
+  const oidx=order.map(p=>sorted.indexOf(p));
+  const hts=['75px','95px','60px'];const cols=['#C0C0C0','#FFD700','#CD7F32'];
+  let pod='<div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:18px">';
+  order.forEach((p,i)=>{
+    const r=oidx[i];
+    pod+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">${avHTML(p.player,r===0?54:42)}<div style="font-weight:700;font-size:.75rem;color:#111;text-align:center;max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.player}</div><div style="font-weight:800;font-size:.8rem;color:var(--red)">${p.vma} km/h</div><div style="width:100%;height:${hts[r]};background:${cols[r]};border-radius:7px 7px 0 0;display:flex;align-items:center;justify-content:center;font-size:1.2rem">${medals[r]||''}</div></div>`;
   });
   pod+='</div>';
-  var bars='<div>';
-  sorted.forEach(function(p,i){
-    var pct=Math.round(p.vma/maxV*100);
-    bars+='<div class="lb-row">'+
-      '<div style="width:22px;text-align:center;font-size:.8rem">'+(medals[i]||(i+1)+'.')+'</div>'+
-      avHTML(p.player,32)+
-      '<div style="flex:1"><div style="font-size:.76rem;font-weight:700;color:#111;margin-bottom:2px">'+p.player+'</div>'+
-      '<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
-      '<div style="font-size:.68rem;color:var(--muted)">'+(p.testName||'')+'</div></div>'+
-      '<div style="font-size:.82rem;font-weight:800;color:var(--red);min-width:52px;text-align:right">'+p.vma+' km/h</div></div>';
+  let bars='<div>';
+  sorted.forEach((p,i)=>{
+    const pct=Math.round(p.vma/maxV*100);
+    bars+=`<div class="lb-row"><div style="width:22px;text-align:center;font-size:.8rem">${medals[i]||(i+1)+'.'}</div>${avHTML(p.player,32)}<div style="flex:1"><div style="font-size:.76rem;font-weight:700;color:#111;margin-bottom:2px">${p.player}</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:.68rem;color:var(--muted)">${p.testName||''}</div></div><div style="font-size:.82rem;font-weight:800;color:var(--red);min-width:52px;text-align:right">${p.vma} km/h</div></div>`;
   });
   bars+='</div>';
   el.innerHTML=pod+bars;
 }
 
 function renderPerfHist(){
-  var el=document.getElementById('perfHist');if(!el)return;
+  const el=document.getElementById('perfHist');if(!el)return;
   if(!perfs.length){el.innerHTML='<div class="empty"><div class="ic">📋</div>Aucune donnée</div>';return;}
-  var s=[].concat(perfs).sort(function(a,b){return new Date(b.createdAt||0)-new Date(a.createdAt||0);});
-  el.innerHTML=s.map(function(p){
-    return '<div style="padding:9px 0;border-bottom:1px solid #ffd6d6">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;font-size:.82rem">'+
-      '<div><b>'+p.player+'</b> <span style="color:var(--muted)">'+(p.testName||'')+'</span>'+
-      '<div style="font-size:.7rem;color:var(--muted)">'+fmtDate(p.date)+' · '+p.dist+'m · '+Math.floor(p.totalSec/60)+"'"+fmt2(p.totalSec%60)+'"</div></div>'+
-      '<div style="display:flex;align-items:center;gap:7px"><b style="color:var(--red)">'+p.vma+' km/h</b>'+
-      '<button class="btn btn-del btn-sm" onclick="delPerf(\''+p.id+'\')">🗑️</button></div></div>'+
-      (p.photoUrl?'<img src="'+p.photoUrl+'" onclick="window.open(\''+p.photoUrl+'\',\'_blank\')" style="width:100%;max-height:100px;object-fit:cover;border-radius:5px;margin-top:5px;cursor:pointer"/>':'')+
-      '</div>';
-  }).join('');
+  const s=[...perfs].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+  el.innerHTML=s.map(p=>`<div style="padding:9px 0;border-bottom:1px solid #ffd6d6"><div style="display:flex;align-items:center;justify-content:space-between;font-size:.82rem"><div><b>${p.player}</b> <span style="color:var(--muted)">${p.testName||''}</span><div style="font-size:.7rem;color:var(--muted)">${fmtDate(p.date)} · ${p.dist}m · ${Math.floor(p.totalSec/60)}'${fmt2(p.totalSec%60)}"</div></div><div style="display:flex;align-items:center;gap:7px"><b style="color:var(--red)">${p.vma} km/h</b><button class="btn btn-del btn-sm" onclick="delPerf('${p.id}')">🗑️</button></div></div>${p.photoUrl?`<img src="${p.photoUrl}" onclick="window.open('${p.photoUrl}','_blank')" style="width:100%;max-height:100px;object-fit:cover;border-radius:5px;margin-top:5px;cursor:pointer"/>`:''}</div>`).join('');
 }
 
-function delPerf(id){if(!confirm('Supprimer ?'))return;db.collection('perfs').doc(id).delete();toast('🗑️ Supprimé');}
+async function delPerf(id){if(!confirm('Supprimer ?'))return;await db.collection('perfs').doc(id).delete();toast('🗑️ Supprimé');}
 
-// ── BIBLIOTHÈQUE ─────────────────────────────────────
 function openLibrary(){
-  var el=document.getElementById('libBody');
-  if(!library.length){
-    el.innerHTML='<div class="empty"><div class="ic">❤️</div>Aucun exercice.<br><span style="font-size:.78rem">Like ❤️ un exercice depuis le suivi !</span></div>';
-  } else {
-    el.innerHTML=library.map(function(e,i){
-      return '<div style="display:flex;align-items:center;gap:9px;padding:9px;background:var(--chalk);border-radius:8px;margin-bottom:7px">'+
-        '<div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+(e.name||'Exercice')+'</div>'+
-        '<div style="font-size:.72rem;color:var(--muted)">'+(e.sets||3)+'×'+(e.reps||10)+' · '+(e.rest||60)+'s récup</div></div>'+
-        '<div style="display:flex;gap:5px">'+
-        '<button class="btn btn-lime btn-sm" onclick="addExFromLib('+i+');closeModal(\'libModal\')">+ Ajouter</button>'+
-        '<button class="btn btn-del btn-sm" onclick="library.splice('+i+',1);localStorage.setItem(\'ts_lib\',JSON.stringify(library));openLibrary()">🗑️</button></div></div>';
-    }).join('');
-  }
+  const el=document.getElementById('libBody');
+  if(!library.length){el.innerHTML='<div class="empty"><div class="ic">❤️</div>Aucun exercice sauvegardé</div>';}
+  else{el.innerHTML=library.map((e,i)=>`<div style="display:flex;align-items:center;gap:9px;padding:9px;background:var(--chalk);border-radius:8px;margin-bottom:7px"><div style="flex:1"><div style="font-weight:700;font-size:.88rem">${e.name||'Exercice'}</div><div style="font-size:.72rem;color:var(--muted)">${e.sets||3}×${e.reps||10} · ${e.rest||60}s récup</div></div><div style="display:flex;gap:5px"><button class="btn btn-lime btn-sm" onclick="addEx(library[${i}]);closeModal('libModal')">+ Ajouter</button><button class="btn btn-del btn-sm" onclick="library.splice(${i},1);localStorage.setItem('ts_lib',JSON.stringify(library));openLibrary()">🗑️</button></div></div>`).join('');}
   document.getElementById('libModal').classList.add('on');
 }
-function addExFromLib(i){addEx(library[i]);}
 
-// ── DUPLIQUER ─────────────────────────────────────────
 function openDup(sid){
-  var s=sessions.find(function(x){return x.id===sid;});if(!s)return;
-  dupTarget=s;
-  document.getElementById('dupBody').innerHTML='<div style="background:var(--chalk);border-radius:8px;padding:10px;margin-bottom:12px"><div style="font-weight:700">'+s.title+'</div><div style="font-size:.76rem;color:var(--muted);margin-top:2px">📅 '+fmtDate(s.date)+' · '+(s.exercises?s.exercises.length:0)+' exercice(s)</div></div>';
+  const s=sessions.find(x=>x.id===sid);if(!s)return;dupTarget=s;
+  document.getElementById('dupBody').innerHTML=`<div style="background:var(--chalk);border-radius:8px;padding:10px;margin-bottom:12px"><div style="font-weight:700">${s.title}</div><div style="font-size:.76rem;color:var(--muted);margin-top:2px">📅 ${fmtDate(s.date)} · ${s.exercises?.length||0} exercice(s)</div></div>`;
   document.getElementById('dupModal').classList.add('on');
 }
 function confirmDup(){
-  if(!dupTarget)return;var s=dupTarget;
+  if(!dupTarget)return;const s=dupTarget;
   document.getElementById('sTitle').value=s.title+' (copie)';
   document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('sDesc').value=s.desc||'';
   exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';
-  (s.exercises||[]).forEach(function(e){addEx(e);});
+  (s.exercises||[]).forEach(e=>addEx(e));
   selectedPl={};renderPlSelGrid();
   closeModal('dupModal');
   document.getElementById('sTitle').scrollIntoView({behavior:'smooth'});
   toast('📋 Séance copiée !');dupTarget=null;
 }
 
-// ── UTILS ─────────────────────────────────────────────
-function fmtDate(d){
-  if(!d)return'';var p=d.split('-');
-  return parseInt(p[2])+' '+['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'][parseInt(p[1])-1]+' '+p[0];
-}
+function fmtDate(d){if(!d)return'';const p=d.split('-');return parseInt(p[2])+' '+['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'][parseInt(p[1])-1]+' '+p[0];}
 function fmt2(n){return String(n).padStart(2,'0');}
-var _t;
-function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_t);_t=setTimeout(function(){el.classList.remove('on');},3200);}
-
-// Enregistre toutes les fonctions globalement
-window._app={
-  switchGroup:switchGroup,askPin:askPin,goTab:goTab,pk:pk,closeModal:closeModal,
-  switchPerfTab:switchPerfTab,addEx:addEx,openLibrary:openLibrary,togglePl:togglePl,
-  addPlayer:addPlayer,removePl:removePl,upEx:upEx,delEx:delEx,prevExVid:prevExVid,
-  createSession:createSession,delSession:delSession,openDup:openDup,confirmDup:confirmDup,
-  openPlModal:openPlModal,onPlayerSelect:onPlayerSelect,selFeel:selFeel,
-  uploadSerie:uploadSerie,finalizeSession:finalizeSession,uploadProfile:uploadProfile,
-  onRunPhoto:onRunPhoto,submitRun:submitRun,addExFromLib:addExFromLib,delPerf:delPerf,likeEx:likeEx
-};
+let _t;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_t);_t=setTimeout(()=>el.classList.remove('on'),3200);}
 </script>
 </body>
 </html>
