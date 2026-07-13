@@ -188,17 +188,15 @@ input[type=file]{display:none}
 <div id="toast"></div>
 
 <script>
-var fs=null;
-let group=null,isCoach=false;
-let players=[],sessions=[],perfs=[],profiles={};
-let selectedPl={},exList=[],exCount=0,feelings={};
-let runPhoto=null,dupTarget=null,pinEntry='';
-let library=JSON.parse(localStorage.getItem('ts_lib')||'[]');
-let unsubSess,unsubPerfs,unsubPl,unsubProf;
-const PIN='2311';
+var group=null,isCoach=false;
+var players=[],sessions=[],perfs=[],profiles={};
+var selectedPl={},exList=[],exCount=0,feelings={};
+var runPhoto=null,dupTarget=null,pinEntry='';
+var library=JSON.parse(localStorage.getItem('ts_lib')||'[]');
+var unsubSess,unsubPerfs,unsubPl,unsubProf;
+var PIN='2311';
 
 window.addEventListener('DOMContentLoaded',function(){
-  db=window._db;fs=window._fs;
   document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
   addEx();
 });
