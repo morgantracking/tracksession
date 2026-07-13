@@ -239,12 +239,20 @@ function loadGroup(){
 }
 
 function listenPlayers(){
-  unsubPl=db.collection('groups').doc(group).onSnapshot(snap=>{
-    players=snap.exists?(snap.data().players||[]):[];
+  unsubPl=db.collection('groups').doc(group).onSnapshot(function(snap){
+    players=(snap&&snap.exists&&snap.data()&&snap.data().players)?snap.data().players:[];
     renderPlList();renderPlSelGrid();fillPickers();
   });
 }
 
+function listenProfiles(){
+  unsubProf=db.collection('profiles').doc(group).onSnapshot(function(snap){
+    profiles=(snap&&snap.exists&&snap.data())?snap.data():{};
+    renderLeaderboard();
+    const pp=document.getElementById('plPick');
+    if(pp&&pp.value)renderPlayerView(pp.value);
+  });
+}
 function listenSessions(){
   unsubSess=db.collection('sessions').where('group','==',group).onSnapshot(snap=>{
     sessions=snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -266,14 +274,6 @@ function listenPerfs(){
   });
 }
 
-function listenProfiles(){
-  unsubProf=db.collection('profiles').doc(group).onSnapshot(snap=>{
-    profiles=snap.exists?(snap.data()||{}):{};
-    renderLeaderboard();
-    const pp=document.getElementById('plPick');
-    if(pp&&pp.value)renderPlayerView(pp.value);
-  });
-}
 
 function askPin(){if(isCoach){goTab('coach');return;}pinEntry='';updPinDots();document.getElementById('pinErr').style.display='none';document.getElementById('pinModal').classList.add('on');}
 function closeModal(id){document.getElementById(id).classList.remove('on');}
