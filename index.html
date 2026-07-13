@@ -99,11 +99,54 @@ input[type=file]{display:none}
 <div id="gate">
   <div class="logo" style="font-size:1.5rem;margin-bottom:5px">⚽ Track<span>Session</span></div>
   <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:24px">Choisis ton groupe</p>
+  <script>
+  function enter(g){
+    group=g;
+    document.getElementById('gate').style.display='none';
+    document.getElementById('hdr').style.display='flex';
+    document.getElementById('main').style.display='block';
+    document.getElementById('grpSel').value=g;
+    document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
+    exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';addEx();
+    loadGroup();
+  }
+  </script>
   <button class="gate-btn" onclick="enter('foot')">⚽ Football</button>
   <button class="gate-btn" onclick="enter('hand')">🤾 Handball</button>
   <button class="gate-btn" onclick="enter('individuel')">💪 Préparation individuelle</button>
 </div>
 
+<script>
+function switchGroup(g){if(window._app)window._app.switchGroup(g);}
+function askPin(){if(window._app)window._app.askPin();}
+function goTab(t){if(window._app)window._app.goTab(t);}
+function pk(k){if(window._app)window._app.pk(k);}
+function closeModal(id){if(window._app)window._app.closeModal(id);}
+function switchPerfTab(t){if(window._app)window._app.switchPerfTab(t);}
+function addEx(e){if(window._app)window._app.addEx(e);}
+function openLibrary(){if(window._app)window._app.openLibrary();}
+function togglePl(n){if(window._app)window._app.togglePl(n);}
+function addPlayer(){if(window._app)window._app.addPlayer();}
+function removePl(n){if(window._app)window._app.removePl(n);}
+function upEx(id,k,v){if(window._app)window._app.upEx(id,k,v);}
+function delEx(id){if(window._app)window._app.delEx(id);}
+function prevExVid(id,i){if(window._app)window._app.prevExVid(id,i);}
+function createSession(){if(window._app)window._app.createSession();}
+function delSession(id,t){if(window._app)window._app.delSession(id,t);}
+function openDup(id){if(window._app)window._app.openDup(id);}
+function confirmDup(){if(window._app)window._app.confirmDup();}
+function openPlModal(s,p){if(window._app)window._app.openPlModal(s,p);}
+function onPlayerSelect(){if(window._app)window._app.onPlayerSelect();}
+function selFeel(s,f,el){if(window._app)window._app.selFeel(s,f,el);}
+function uploadSerie(s,p,e,si,i){if(window._app)window._app.uploadSerie(s,p,e,si,i);}
+function finalizeSession(s,p){if(window._app)window._app.finalizeSession(s,p);}
+function uploadProfile(p,i){if(window._app)window._app.uploadProfile(p,i);}
+function onRunPhoto(i){if(window._app)window._app.onRunPhoto(i);}
+function submitRun(){if(window._app)window._app.submitRun();}
+function addExFromLib(i){if(window._app)window._app.addExFromLib(i);}
+function delPerf(id){if(window._app)window._app.delPerf(id);}
+function likeEx(b){if(window._app)window._app.likeEx(b);}
+</script>
 <header id="hdr">
   <div class="logo">⚽ Track<span>Session</span></div>
   <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
@@ -247,18 +290,6 @@ function cloudUpload(file){
         resolve(d.secure_url);
       }).catch(reject);
   });
-}
-
-// ── GATE ─────────────────────────────────────────────
-function enter(g){
-  group=g;
-  document.getElementById('gate').style.display='none';
-  document.getElementById('hdr').style.display='flex';
-  document.getElementById('main').style.display='block';
-  document.getElementById('grpSel').value=g;
-  document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
-  exList=[];exCount=0;document.getElementById('exBuilder').innerHTML='';addEx();
-  loadGroup();
 }
 
 function switchGroup(g){
@@ -800,6 +831,17 @@ function fmtDate(d){
 function fmt2(n){return String(n).padStart(2,'0');}
 var _t;
 function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_t);_t=setTimeout(function(){el.classList.remove('on');},3200);}
+
+// Enregistre toutes les fonctions globalement
+window._app={
+  switchGroup:switchGroup,askPin:askPin,goTab:goTab,pk:pk,closeModal:closeModal,
+  switchPerfTab:switchPerfTab,addEx:addEx,openLibrary:openLibrary,togglePl:togglePl,
+  addPlayer:addPlayer,removePl:removePl,upEx:upEx,delEx:delEx,prevExVid:prevExVid,
+  createSession:createSession,delSession:delSession,openDup:openDup,confirmDup:confirmDup,
+  openPlModal:openPlModal,onPlayerSelect:onPlayerSelect,selFeel:selFeel,
+  uploadSerie:uploadSerie,finalizeSession:finalizeSession,uploadProfile:uploadProfile,
+  onRunPhoto:onRunPhoto,submitRun:submitRun,addExFromLib:addExFromLib,delPerf:delPerf,likeEx:likeEx
+};
 </script>
 </body>
 </html>
